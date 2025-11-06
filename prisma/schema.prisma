@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ExerciseType {
+  RUN
+  CYCLE
+  SWIM
+  // CIYCLE은 오타, CYCLE로 통일
+}
+
+enum MedalType {
+  overTenmember
+  overhundredrecord
+  overhundredlike
+}
+
+model Group {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @db.VarChar(20)
+  description       String?  @db.VarChar(100)
+  nickname          String   @db.VarChar(20)
+  password          String   @db.VarChar(20)
+  image             String? // 이미지 (없을시 기본이미지)
+  tags              String[]
+  goalCount         Int      @default(0) // goalnumber
+  discordWebhookUrl String? // discordwebhookurl
+  discordInviteUrl  String? // discordserverinviteurl
+  likes             Int      @default(0) // 0이상 추천수
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  participants    Participant[]
+  exerciserecords ExerciseRecord[]
+  medals          Medal[]
+  groupLikes      GroupLike[]
+
+  @@index([name])
+  @@map("groups")
+}
+
+model Participant {
+  id        Int      @id @default(autoincrement())
+  nickname  String
+  password  String   @db.VarChar(20) // 8자이상20자이하
+  isowner   Boolean  @default(false)
+  groupId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  group           Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  exerciserecords ExerciseRecord[]
+  groupLikes      GroupLike[]
+
+  @@unique([groupId, nickname])
+  @@index([groupId])
+  @@map("participants")
+}
+
+model ExerciseRecord {
+  id            Int          @id @default(autoincrement())
+  exerciseType  ExerciseType // RUN, CYCLE, SWIM
+  description   String? // 설명
+  playTime      Int // 시간
+  distance      Float // 거리
+  images        String[] // 사진 (최대 3장)
+  password      String // 비밀번호
+  participantId Int // 관계 필드 (Participant)
+  groupId       Int // 관계 필드 (Group)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  group       Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([groupId, createdAt])
+  @@index([participantId])
+  @@map("exerciserecords")
+}
+
+model Medal {
+  id        Int       @id @default(autoincrement())
+  type      MedalType // overTenmember, overhundredrecord, overhundredlike
+  groupId   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, type])
+  @@index([groupId])
+  @@map("medals")
+}
+
+model GroupLike {
+  participantId Int // 참여자id
+  groupId       Int // 그룹id
+  createdAt     DateTime @default(now()) // 생성시간
+
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  group       Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([participantId, groupId])
+  @@index([groupId])
+  @@index([participantId])
+  @@map("grouplikes")
+}
