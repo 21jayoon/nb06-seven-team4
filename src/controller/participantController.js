@@ -53,8 +53,8 @@ class ParticipantController {
       // 중복 닉네임 체크
       const existingParticipant = await prisma.participant.findUnique({
         where: {
-          groupId_nickname: {
-            groupId: groupId,
+          groupid_nickname: {
+            groupid: groupId,
             nickname,
           },
         },
@@ -71,7 +71,9 @@ class ParticipantController {
         data: {
           nickname,
           password,
-          groupId: groupId,
+          groupid: groupId,
+          isowner: false,
+          hasLiked: false,
         },
       });
 
@@ -116,11 +118,11 @@ class ParticipantController {
         name: updatedGroup.name,
         description: updatedGroup.description || '',
         photoUrl: updatedGroup.image || '',
-        goalRep: updatedGroup.goalCount,
-        discordWebhookUrl: updatedGroup.discordWebhookUrl || '',
-        discordInviteUrl: updatedGroup.discordInviteUrl || '',
+        goalRep: updatedGroup.goldnumber,
+        discordWebhookUrl: updatedGroup.discordwebhookurl || '',
+        discordInviteUrl: updatedGroup.discordserverinviteurl || '',
         likeCount: updatedGroup.likes,
-        tags: updatedGroup.tags,
+        tags: updatedGroup.tag,
         owner: owner,
         participants: updatedGroup.participants.map((p) => ({
           id: p.id,
@@ -130,7 +132,7 @@ class ParticipantController {
         })),
         createdAt: updatedGroup.createdAt.getTime(),
         updatedAt: updatedGroup.updatedAt.getTime(),
-        badges: updatedGroup.medals.map((m) => m.type),
+        badges: updatedGroup.medals.map((m) => m.medaltype),
       };
 
       res.status(201).json(response);
@@ -169,8 +171,8 @@ class ParticipantController {
 
       const participant = await prisma.participant.findUnique({
         where: {
-          groupId_nickname: {
-            groupId: groupId,
+          groupid_nickname: {
+            groupid: groupId,
             nickname,
           },
         },
