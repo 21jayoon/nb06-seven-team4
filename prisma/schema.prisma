@@ -26,7 +26,7 @@ model Group {
   discordserverinviteurl String?
   goldnumber             Int
   likes                  Int
-  // groipLike              GroipLike[]
+  groipLike              GroipLike[]
   participant            Participant[]
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
@@ -40,21 +40,21 @@ model Participant {
   isowner   Boolean
   groupid   Int
   group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  // hasLiked  Boolean
+  hasLiked  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([groupid, nickname])
 }
 
-// model GroipLike {
-//   participantId Int
-//   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-//   groupId       Int
-//   group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+model GroipLike {
+  participantId Int
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  groupId       Int
+  group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
-//   @@id([participantId, groupId])
-// }
+  @@id([participantId, groupId])
+}
 
 model ExerciseRecord {
   id           Int          @id @default(autoincrement())
