@@ -1,74 +1,9 @@
-
-
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
 import { CustomError } from '../libs/errorHandler.js';
-
-
 import { AddGroupLike, MinusGroupLike, GetGroupListParamsStruct } from '../structs/groupStructs.js';
 import { assert } from 'superstruct';
 import { prismaClient } from './../libs/constants.js';
 
-
-const prisma = new PrismaClient();
-
-export async function GetGroupList(req, res) {
-    const { page, limit, order, orderBy, search } = create(req.query, GetGroupListParamsStruct);
-    const where = {
-        title: search ? { contains: search } : undefined,
-    };
-
-    const totalCount = await prismaClient.group.count({ where });
-
-    let orderBySetting;
-    switch (orderBy) {
-        case 'likeCount': { orderBySetting = { likeCount: order }; } break;
-        case 'participantCount': { orderBySetting = { participantCount: order }; } break;
-        case 'createdAt': { orderBySetting = { createdAt: order }; } break;
-        default: { orderBySetting = { createdAt: order }; } break;
-    }
-
-    const groups = await prismaClient.group.findMany({
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: orderBySetting,
-        where,
-    });
-    return res.send({ list: groups, totalCount });
-}
-
-
-export async function PostGroupLike(req, res) {
-    assert(req.params, AddGroupLike);
-    const { groupid } = req.params;
-    const updatedGroup = await prismaClient.group.update({
-        where: { id: parseInt(groupid) },
-        data: {
-            likes: { increament: 1 }
-        },
-        select: {
-            id: true,
-            likes: true
-        }
-    });
-    res.status(200).send(updatedGroup);
-}
-
-export async function DeleteGroupLike(req, res) {
-    assert(req.params, MinusGroupLike);
-    const { groupid } = req.params;
-    const updatedGroup = await prismaClient.group.update({
-        where: { id: parseInt(groupid) },
-        data: {
-            likes: { decrement: 1 }
-        },
-        select: {//select안에 있는 필드만 updatedGroup에 할당시켜줘
-            id: true,
-            likes: true
-        }
-    });
-    res.status(200).send(updatedGroup);
-}
 
 
 // 비밀번호 해싱에 사용할 솔트 라운드
@@ -104,7 +39,7 @@ export class GroupController {
             const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
             // 2. 그룹 데이터베이스 저장
-            const newGroup = await prisma.group.create({
+            const newGroup = await prismaClient.group.create({
                 data: {
                     groupName: groupName,
                     description,
@@ -142,7 +77,7 @@ export class GroupController {
      */
     async getAllGroups(req, res, next) {
         try {
-            const groups = await prisma.group.findMany({
+            const groups = await prismaClient.group.findMany({
                 select: {
                     id: true,
                     groupName: true,
@@ -183,7 +118,7 @@ export class GroupController {
                 throw new CustomError('유효하지 않은 그룹 ID입니다.', 400);
             }
 
-            const group = await prisma.group.findUnique({
+            const group = await prismaClient.group.findUnique({
                 where: { id: id },
                 select: {
                     id: true,
@@ -244,7 +179,7 @@ export class GroupController {
                 throw new CustomError('유효하지 않은 그룹 ID입니다.', 400);
             }
 
-            const group = await prisma.group.findUnique({
+            const group = await prismaClient.group.findUnique({
                 where: { id: id },
                 select: { password: true }
             });
@@ -272,7 +207,7 @@ export class GroupController {
             if (discordServerInviteUrl) updateData.discordserverinviteurl = discordServerInviteUrl;
             if (tags !== undefined) updateData.tag = tags;
 
-            const updatedGroup = await prisma.group.update({
+            const updatedGroup = await prismaClient.group.update({
                 where: { id: id },
                 data: updateData,
                 select: {
@@ -307,7 +242,7 @@ export class GroupController {
             }
 
             // 1. 현재 그룹 정보 조회 및 비밀번호 확인
-            const group = await prisma.group.findUnique({
+            const group = await prismaClient.group.findUnique({
                 where: { id: id },
                 select: { password: true }
             });
@@ -327,7 +262,7 @@ export class GroupController {
             }
 
             // 2. 그룹 삭제 실행
-            await prisma.group.delete({
+            await prismaClient.group.delete({
                 where: { id: id },
             });
 
@@ -337,5 +272,63 @@ export class GroupController {
             next(error);
         }
     }
+    async GetGroupList(req, res) {
+        const { page, limit, order, orderBy, search } = create(req.query, GetGroupListParamsStruct);
+        const where = {
+            title: search ? { contains: search } : undefined,
+        };
+
+        const totalCount = await prismaClient.group.count({ where });
+
+        let orderBySetting;
+        switch (orderBy) {
+            case 'likeCount': { orderBySetting = { likeCount: order }; } break;
+            case 'participantCount': { orderBySetting = { participantCount: order }; } break;
+            case 'createdAt': { orderBySetting = { createdAt: order }; } break;
+            default: { orderBySetting = { createdAt: order }; } break;
+        }
+
+        const groups = await prismaClient.group.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: orderBySetting,
+            where,
+        });
+        return res.send({ list: groups, totalCount });
+    }
+
+
+    async PostGroupLike(req, res) {
+        assert(req.params, AddGroupLike);
+        const { groupid } = req.params;
+        const updatedGroup = await prismaClient.group.update({
+            where: { id: parseInt(groupid) },
+            data: {
+                likes: { increament: 1 }
+            },
+            select: {
+                id: true,
+                likes: true
+            }
+        });
+        res.status(200).send(updatedGroup);
+    }
+
+    async DeleteGroupLike(req, res) {
+        assert(req.params, MinusGroupLike);
+        const { groupid } = req.params;
+        const updatedGroup = await prismaClient.group.update({
+            where: { id: parseInt(groupid) },
+            data: {
+                likes: { decrement: 1 }
+            },
+            select: {//select안에 있는 필드만 updatedGroup에 할당시켜줘
+                id: true,
+                likes: true
+            }
+        });
+        res.status(200).send(updatedGroup);
+    }
+
 }
->>>>>>> origin/develop
+

@@ -1,7 +1,6 @@
 import express from 'express';
 import { PORT } from './libs/constants.js';
 import cors from 'cors';
-import groupInteractionRouter from './routers/groupInteractionRouter.js';
 import groupRouter from './router/groupRouter.js';
 import { globalErrorHandler } from './middlewares/errorHandler.js';
 
@@ -16,7 +15,6 @@ app.get('/', (req, res) => {
     res.send('API Server Running');
 });
 
-app.use('/groups/:id/likes', groupInteractionRouter);
 app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
