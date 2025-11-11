@@ -25,7 +25,7 @@ export class GroupController {
                 password,
                 image,
                 tags,
-                goalnumber,
+                goalNumber,
                 discordWebhookUrl,
                 discordServerInviteUrl
             } = req.body;
@@ -46,7 +46,7 @@ export class GroupController {
                     nickname: nickname,
                     password: hashedPassword,
                     image,
-                    goalnumber: goalnumber,
+                    goalNumber: goalNumber,
                     discordwebhookurl: discordWebhookUrl,
                     discordserverinviteurl: discordServerInviteUrl,
                     tag: tags || [],
@@ -100,7 +100,7 @@ export class GroupController {
                     nickname: true,
                     image: true,
                     tag: true,
-                    goalnumber: true,
+                    goalNumber: true,
                     likes: true,
                     createdAt: true,
                 },
@@ -155,7 +155,7 @@ export class GroupController {
                     tag: true,
                     discordwebhookurl: true,
                     discordserverinviteurl: true,
-                    goalnumber: true,
+                    goalNumber: true,
                     likes: true,
                     createdAt: true,
                     updatedAt: true,
@@ -194,7 +194,7 @@ export class GroupController {
                 description,
                 image,
                 tags,
-                goalnumber,
+                goalNumber,
                 discordWebhookUrl,
                 discordServerInviteUrl,
                 password
@@ -228,7 +228,7 @@ export class GroupController {
             if (groupName) updateData.groupName = groupName;
             if (description) updateData.description = description;
             if (image) updateData.image = image;
-            if (goalnumber !== undefined) updateData.goalnumber = Number(goalnumber);
+            if (goalNumber !== undefined) updateData.goalNumber = Number(goalNumber);
             if (discordWebhookUrl) updateData.discordwebhookurl = discordWebhookUrl;
             if (discordServerInviteUrl) updateData.discordserverinviteurl = discordServerInviteUrl;
             if (tags !== undefined) updateData.tag = tags;
@@ -322,7 +322,7 @@ export class GroupController {
                 nickname: true,
                 image: true,
                 tag: true,
-                goalnumber: true,
+                goalNumber: true,
                 likes: true,
                 createdAt: true,
             },
