@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  id                     Int              @id @default(autoincrement())
+  name                   String           @unique
+  description            String?
+  nickname               String
+  password               String
+  image                  String?
+  tag                    String[]
+  discordwebhookurl      String?
+  discordserverinviteurl String?
+  goldnumber             Int
+  likes                  Int
+  groipLike              GroipLike[]
+  participant            Participant[]
+  exerciserecords        ExerciseRecord[]
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  medal                  Medal[]
+}
+
+model Participant {
+  id              Int              @id @default(autoincrement())
+  nickname        String
+  password        String
+  isowner         Boolean
+  groupid         Int
+  group           Group            @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  hasLiked        Boolean
+  exerciserecords ExerciseRecord[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  GroipLike       GroipLike[]
+
+  @@unique([groupid, nickname])
+}
+
+model GroipLike {
+  participantId Int
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  groupId       Int
+  group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([participantId, groupId])
+}
+
+model ExerciseRecord {
+  id            Int          @id @default(autoincrement())
+  exercisetype  exerciseType
+  description   String?
+  playtime      Int
+  distance      Float
+  images        String[]
+  password      String
+  participantId Int
+  participant   Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  groupId       Int
+  group         Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([groupId])
+  @@index([participantId])
+  @@index([groupId, createdAt])
+}
+
+model Medal {
+  id        Int       @id @default(autoincrement())
+  medaltype medalType
+  groupid   Int
+  group     Group     @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum exerciseType {
+  RUN
+  CIYCLE
+  SWIM
+}
+
+enum medalType {
+  OVERTENMEMBER
+  OVERHUNDREADRECORD
+  OVERHUNDREADLIKE
+}
