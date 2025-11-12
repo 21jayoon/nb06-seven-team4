@@ -145,24 +145,31 @@ class ParticipantController {
   async leaveGroup(req, res, next) {
     try {
       const { id } = req.params;
-      let nickname;
-      let password;
+
+      // 다양한 입력 형식 지원 (JSON, Form data, Plain text)
+      let nickname, password;
 
       if (typeof req.body === 'string') {
-        req.body
-          .split('&')
-          .map((pair) => pair.trim())
-          .filter(Boolean)
-          .forEach((pair) => {
-            const [key, value = ''] = pair.split('=');
-            if (key === 'nickname') {
-              nickname = decodeURIComponent(value);
+        // Plain text 형식 처리 (예: "nickname=test\npassword=123" 또는 "nickname=test&password=123")
+        const textBody = req.body.trim();
+        if (textBody.includes('&')) {
+          // URL encoded 형식
+          const params = new URLSearchParams(textBody);
+          nickname = params.get('nickname');
+          password = params.get('password');
+        } else {
+          // 줄바꿈 형식
+          const lines = textBody.split('\n');
+          for (const line of lines) {
+            if (line.includes('=')) {
+              const [key, value] = line.split('=').map((s) => s.trim());
+              if (key === 'nickname') nickname = value;
+              if (key === 'password') password = value;
             }
-            if (key === 'password') {
-              password = decodeURIComponent(value);
-            }
-          });
-      } else if (typeof req.body === 'object' && req.body !== null) {
+          }
+        }
+      } else {
+        // JSON 또는 Form data 형식
         nickname = req.body.nickname;
         password = req.body.password;
       }
