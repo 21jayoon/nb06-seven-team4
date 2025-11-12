@@ -145,7 +145,27 @@ class ParticipantController {
   async leaveGroup(req, res, next) {
     try {
       const { id } = req.params;
-      const { nickname, password } = req.body;
+      let nickname;
+      let password;
+
+      if (typeof req.body === 'string') {
+        req.body
+          .split('&')
+          .map((pair) => pair.trim())
+          .filter(Boolean)
+          .forEach((pair) => {
+            const [key, value = ''] = pair.split('=');
+            if (key === 'nickname') {
+              nickname = decodeURIComponent(value);
+            }
+            if (key === 'password') {
+              password = decodeURIComponent(value);
+            }
+          });
+      } else if (typeof req.body === 'object' && req.body !== null) {
+        nickname = req.body.nickname;
+        password = req.body.password;
+      }
 
       if (!nickname) {
         return res.status(400).json({
