@@ -4,8 +4,6 @@ import { GetGroupListParamsStruct } from '../structs/groupStructs.js';
 import { assert, create } from 'superstruct';
 import { prismaClient } from './../libs/constants.js';
 
-
-
 // 비밀번호 해싱에 사용할 솔트 라운드
 const SALT_ROUNDS = 10;
 
@@ -27,7 +25,8 @@ export class GroupController {
                 tags,
                 goalNumber,
                 discordWebhookUrl,
-                discordServerInviteUrl
+                discordServerInviteUrl,
+                likes
             } = req.body;
 
             // 필수 입력값 검증
@@ -50,6 +49,7 @@ export class GroupController {
                     discordwebhookurl: discordWebhookUrl,
                     discordserverinviteurl: discordServerInviteUrl,
                     tag: tags || [],
+                    likes: likes
                 },
                 select: {
                     id: true,
@@ -159,12 +159,11 @@ export class GroupController {
                     likes: true,
                     createdAt: true,
                     updatedAt: true,
-                    // TODO: participants, medals 모델에 따른 필드 수정 필요
                     participants: {
                         select: { nickname: true }
                     },
                     medals: {
-                        select: { type: true, createdAt: true }
+                        select: { medaltype: true, createdAt: true }
                     }
                 }
             });
@@ -369,6 +368,4 @@ export class GroupController {
         });
         res.status(200).send(updatedGroup);
     }
-
 }
-

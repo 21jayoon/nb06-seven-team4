@@ -8,7 +8,6 @@ import errorHandler from './libs/errorHandler.js';
 import groupRouter from './router/groupRouter.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // 미들웨어
 app.use(cors());
