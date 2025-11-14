@@ -6,6 +6,7 @@ import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/errorHandler.js';
 import groupRouter from './router/groupRouter.js';
+import recordRouter from './router/recordRouter.js';
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
 app.use('/groups', groupRouter);
+app.use('/groups/:id/records', recordRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {

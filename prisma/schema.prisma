@@ -24,7 +24,7 @@ model Group {
   discordwebhookurl      String?
   discordserverinviteurl String?
   goalNumber             Int
-  likes                  Int              @default(0) 
+  likes                  Int              @default(0)
   //groupLike              GroupLike[]
   participants           Participant[]
   exerciserecords        ExerciseRecord[]
@@ -34,46 +34,34 @@ model Group {
 }
 
 model Participant {
-  id              Int              @id @default(autoincrement())
-  nickname        String
-  password        String
-  isowner         Boolean
-  groupid         Int
-  group           Group            @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  hasLiked        Boolean
-  exerciserecords ExerciseRecord[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  // groupLike       GroupLike[]
+  id        Int      @id @default(autoincrement())
+  nickname  String
+  password  String
+  isowner   Boolean
+  groupid   Int
+  group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  hasLiked  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([groupid, nickname])
 }
 
-// model GroupLike {
-//   participantId Int
-//   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-//   groupId       Int
-//   group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-//   @@id([participantId, groupId])
-// }
-
 model ExerciseRecord {
-  id            Int          @id @default(autoincrement())
-  exercisetype  exerciseType
-  description   String?
-  playtime      Int
-  distance      Float
-  images        String[]
-  password      String
-  participantId Int
-  participant   Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  groupId       Int
-  group         Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id             Int          @id @default(autoincrement())
+  exerciseType   exerciseType
+  description    String?
+  time           Int
+  distance       Float
+  photos         String[]
+  authorNickname String
+  authorPassword String
+  groupId        Int
+  group          Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([groupId])
-  @@index([participantId])
   @@index([groupId, createdAt])
 }
 
@@ -88,7 +76,7 @@ model Medal {
 
 enum exerciseType {
   RUN
-  CIYCLE
+  CYCLE
   SWIM
 }
 
