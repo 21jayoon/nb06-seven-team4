@@ -24,8 +24,8 @@ model Group {
   discordwebhookurl      String?
   discordserverinviteurl String?
   goalNumber             Int
-  likes                  Int              @default(0)
-  // GropLike              GropLike[]
+  likes                  Int              @default(0) 
+  //groupLike              GroupLike[]
   participants           Participant[]
   exerciserecords        ExerciseRecord[]
   createdAt              DateTime         @default(now())
@@ -44,17 +44,16 @@ model Participant {
   exerciserecords ExerciseRecord[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  // GroipLike       GropLike[]
+  // groupLike       GroupLike[]
 
   @@unique([groupid, nickname])
 }
 
-// model GropLike {
+// model GroupLike {
 //   participantId Int
 //   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 //   groupId       Int
 //   group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-
 //   @@id([participantId, groupId])
 // }
 

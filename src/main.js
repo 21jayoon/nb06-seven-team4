@@ -10,7 +10,32 @@ import groupRouter from './router/groupRouter.js';
 const app = express();
 
 // 미들웨어
-app.use(cors());
+// CORS 설정: 개발 환경에서는 모든 origin 허용, 프로덕션에서는 환경 변수로 제어
+const getCorsOrigin = () => {
+  const corsOrigin = process.env.CORS_ORIGIN;
+
+  // CORS_ORIGIN이 설정되지 않았거나 '*'이면 모든 origin 허용
+  if (!corsOrigin || corsOrigin === '*') {
+    return '*';
+  }
+
+  // 쉼표로 구분된 여러 origin 허용 (예: "https://domain1.com,https://domain2.com")
+  if (corsOrigin.includes(',')) {
+    return corsOrigin.split(',').map((origin) => origin.trim());
+  }
+
+  // 단일 origin
+  return corsOrigin;
+};
+
+app.use(
+  cors({
+  origin: getCorsOrigin(),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+})
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,13 +48,6 @@ app.use('/groups', groupRouter);
 app.get('/', (req, res) => {
   res.json({ message: 'API Server is running' });
 });
-
-/*
-// 기본 경로 응답
-app.get('/', (req, res) => {
-    res.send('API Server Running');
-});
-*/
 
 // 404 핸들러
 app.use((req, res) => {

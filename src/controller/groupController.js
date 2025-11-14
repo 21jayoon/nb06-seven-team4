@@ -4,8 +4,6 @@ import { GetGroupListParamsStruct } from '../structs/groupStructs.js';
 import { assert, create } from 'superstruct';
 import { prismaClient } from './../libs/constants.js';
 
-
-
 // 비밀번호 해싱에 사용할 솔트 라운드
 const SALT_ROUNDS = 10;
 
@@ -49,7 +47,7 @@ export class GroupController {
                     goalNumber: goalNumber,
                     discordwebhookurl: discordWebhookUrl,
                     discordserverinviteurl: discordServerInviteUrl,
-                    tag: tags || [],
+                    tag: tags || []
                 },
                 select: {
                     id: true,
@@ -139,7 +137,7 @@ export class GroupController {
      */
     async getGroupDetails(req, res, next) {
         try {
-            const id = parseInt(req.params.groupId);
+            const id = req.params.groupId;
 
             if (isNaN(id)) {
                 throw new CustomError('유효하지 않은 그룹 ID입니다.', 400);
@@ -160,7 +158,6 @@ export class GroupController {
                     likes: true,
                     createdAt: true,
                     updatedAt: true,
-                    // TODO: participants, medals 모델에 따른 필드 수정 필요
                     participants: {
                         select: { nickname: true }
                     },
@@ -348,4 +345,3 @@ export class GroupController {
         }
     }
 }
-
