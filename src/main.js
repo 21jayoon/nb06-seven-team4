@@ -1,12 +1,13 @@
 import 'dotenv/config';
+import { PORT } from './libs/constants.js';
 import express from 'express';
 import cors from 'cors';
 import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/errorHandler.js';
+import groupRouter from './router/groupRouter.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // 미들웨어
 // CORS 설정: 개발 환경에서는 모든 origin 허용, 프로덕션에서는 환경 변수로 제어
@@ -27,20 +28,21 @@ const getCorsOrigin = () => {
   return corsOrigin;
 };
 
-const corsOptions = {
+app.use(
+  cors({
   origin: getCorsOrigin(),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
+})
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
+app.use('/groups', groupRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {
