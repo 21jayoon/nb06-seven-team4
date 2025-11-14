@@ -10,6 +10,7 @@ class ParticipantController {
 
       if (!nickname) {
         return res.status(400).json({
+          success: false,
           path: 'nickname',
           message: 'nickname is required',
         });
@@ -17,6 +18,7 @@ class ParticipantController {
 
       if (!password) {
         return res.status(400).json({
+          success: false,
           path: 'password',
           message: 'password is required',
         });
@@ -149,6 +151,7 @@ class ParticipantController {
 
       if (!nickname) {
         return res.status(400).json({
+          success: false,
           path: 'nickname',
           message: 'nickname is required',
         });
@@ -156,6 +159,7 @@ class ParticipantController {
 
       if (!password) {
         return res.status(400).json({
+          success: false,
           path: 'password',
           message: 'password is required',
         });
@@ -164,6 +168,7 @@ class ParticipantController {
       const groupId = parseInt(id);
       if (isNaN(groupId)) {
         return res.status(400).json({
+          success: false,
           path: 'id',
           message: 'Invalid group ID',
         });
@@ -187,6 +192,7 @@ class ParticipantController {
 
       if (participant.password !== password) {
         return res.status(401).json({
+          success: false,
           path: 'password',
           message: 'Wrong password',
         });

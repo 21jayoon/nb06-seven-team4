@@ -9,7 +9,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 미들웨어
-app.use(cors());
+// CORS 설정: 개발 환경에서는 모든 origin 허용, 프로덕션에서는 환경 변수로 제어
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
