@@ -163,7 +163,7 @@ export class GroupController {
                         select: { nickname: true }
                     },
                     medals: {
-                        select: { medaltype: true, createdAt: true }
+                        select: { type: true, createdAt: true }
                     }
                 }
             });
