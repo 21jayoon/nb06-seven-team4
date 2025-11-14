@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 // 라우터
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
-app.use('/groups', groupRouter);
+app.use('/', groupRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {
