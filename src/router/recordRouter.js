@@ -5,9 +5,9 @@ import { catchAsync } from '../libs/catchAsync.js';
 const recordRouter = express.Router();
 
 
-const recordController = new recordController();
+const RecordController = new recordController();
 // 그룹 랭킹 조회
-recordRouter.post('/', catchAsync(recordController.CreateRecords));
-recordRouter.get('/', catchAsync(recordController.GetRecords));
+recordRouter.post('/', catchAsync(RecordController.CreateRecords));
+recordRouter.get('/', catchAsync(RecordController.GetRecords));
 
 export default recordRouter;

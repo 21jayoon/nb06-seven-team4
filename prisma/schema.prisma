@@ -25,7 +25,6 @@ model Group {
   discordserverinviteurl String?
   goalNumber             Int
   likes                  Int              @default(0)
-  //groupLike              GroupLike[]
   participants           Participant[]
   exerciserecords        ExerciseRecord[]
   createdAt              DateTime         @default(now())

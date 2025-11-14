@@ -31,11 +31,11 @@ const getCorsOrigin = () => {
 
 app.use(
   cors({
-  origin: getCorsOrigin(),
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-})
+    origin: getCorsOrigin(),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
