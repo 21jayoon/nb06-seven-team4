@@ -9,8 +9,9 @@ class RankingController {
 
       if (isNaN(groupId)) {
         return res.status(400).json({
-          path: 'groupId',
-          message: 'groupId must be integer',
+          success: false,
+          path: 'id',
+          message: 'Invalid group ID',
         });
       }
 
@@ -19,6 +20,7 @@ class RankingController {
       // duration 유효성 검사
       if (duration !== 'weekly' && duration !== 'monthly') {
         return res.status(400).json({
+          success: false,
           path: 'duration',
           message: "duration must be 'weekly' or 'monthly'",
         });
