@@ -25,8 +25,7 @@ export class GroupController {
                 tags,
                 goalNumber,
                 discordWebhookUrl,
-                discordServerInviteUrl,
-                likes
+                discordServerInviteUrl
             } = req.body;
 
             // 필수 입력값 검증
@@ -48,8 +47,7 @@ export class GroupController {
                     goalNumber: goalNumber,
                     discordwebhookurl: discordWebhookUrl,
                     discordserverinviteurl: discordServerInviteUrl,
-                    tag: tags || [],
-                    likes: likes
+                    tag: tags || []
                 },
                 select: {
                     id: true,
@@ -138,7 +136,7 @@ export class GroupController {
      */
     async getGroupDetails(req, res, next) {
         try {
-            const id = parseInt(req.params.groupId);
+            const id = req.params.groupId;
 
             if (isNaN(id)) {
                 throw new CustomError('유효하지 않은 그룹 ID입니다.', 400);
@@ -163,7 +161,7 @@ export class GroupController {
                         select: { nickname: true }
                     },
                     medals: {
-                        select: { medaltype: true, createdAt: true }
+                        select: { type: true, createdAt: true }
                     }
                 }
             });
