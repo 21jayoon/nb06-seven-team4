@@ -15,7 +15,7 @@ datasource db {
 
 model Group {
   id                     Int              @id @default(autoincrement())
-  name                   String           @unique
+  groupName              String           @unique
   description            String?
   nickname               String
   password               String
@@ -23,14 +23,14 @@ model Group {
   tag                    String[]
   discordwebhookurl      String?
   discordserverinviteurl String?
-  goldnumber             Int
-  likes                  Int
-  groipLike              GroipLike[]
-  participant            Participant[]
+  goalNumber             Int
+  likes                  Int              @default(0)
+  // GropLike              GropLike[]
+  participants           Participant[]
   exerciserecords        ExerciseRecord[]
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
-  medal                  Medal[]
+  medals                 Medal[]
 }
 
 model Participant {
@@ -44,19 +44,19 @@ model Participant {
   exerciserecords ExerciseRecord[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  GroipLike       GroipLike[]
+  // GroipLike       GropLike[]
 
   @@unique([groupid, nickname])
 }
 
-model GroipLike {
-  participantId Int
-  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  groupId       Int
-  group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+// model GropLike {
+//   participantId Int
+//   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+//   groupId       Int
+//   group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
-  @@id([participantId, groupId])
-}
+//   @@id([participantId, groupId])
+// }
 
 model ExerciseRecord {
   id            Int          @id @default(autoincrement())
@@ -79,12 +79,12 @@ model ExerciseRecord {
 }
 
 model Medal {
-  id        Int       @id @default(autoincrement())
-  medaltype medalType
+  id        Int      @id @default(autoincrement())
+  type      Type
   groupid   Int
-  group     Group     @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum exerciseType {
@@ -93,7 +93,7 @@ enum exerciseType {
   SWIM
 }
 
-enum medalType {
+enum Type {
   OVERTENMEMBER
   OVERHUNDREADRECORD
   OVERHUNDREADLIKE
