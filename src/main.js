@@ -8,10 +8,14 @@ import errorHandler from './libs/errorHandler.js';
 import groupRouter from './router/groupRouter.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // 미들웨어
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3001',
+    credentials: true,
+    })
+  );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: 'text/plain' }));
@@ -19,19 +23,13 @@ app.use(express.text({ type: 'text/plain' }));
 // 라우터
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
-app.use('/groups', groupRouter);
+app.use('/', groupRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {
   res.json({ message: 'API Server is running' });
+  res.send('API Server Running');
 });
-
-/*
-// 기본 경로 응답
-app.get('/', (req, res) => {
-    res.send('API Server Running');
-});
-*/
 
 // 404 핸들러
 app.use((req, res) => {
