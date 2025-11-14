@@ -75,7 +75,7 @@ export class GroupController {
      */
     async getAllGroups(req, res, next) {
         try {
-            console.log("getAllGroups 실행 시작");
+            //쿼리 파람들의 값 유효성 검사
             const { 
                 page = 1, 
                 limit = 10, 
@@ -83,13 +83,13 @@ export class GroupController {
                 orderBy = 'createdAt', 
                 search 
             } = create(req.query, GetGroupListParamsStruct);
-            const where = {
+            const where = { //검색어가 있다면 추가
                 title: search ? { contains: search } : undefined,
             };
-
+            //api명세서 내 totalCount 가 존재하여 추가
             const totalCount = await prismaClient.group.count({ where });
 
-            let orderBySetting;
+            let orderBySetting;//정렬 셋팅을 위한 변수
             switch (orderBy) {
                 case 'likeCount': { orderBySetting = { likeCount: order }; } break;
                 case 'participantCount': { orderBySetting = { participantCount: order }; } break;
@@ -302,38 +302,51 @@ export class GroupController {
         }
     }
 
-    async PostGroupLike(req, res) {
-        const { groupId } = req.params;
-        const id = parseInt(groupId);
-        // assert(id, AddGroupLike);
-
-        const updatedGroup = await prismaClient.group.update({
-            where: { id: id },
-            data: {
-                likes: { increment: 1 }
-            },
-            select: {
-                id: true,
-                likes: true
+    async PostGroupLike(req, res, next) {
+        try {
+            const { groupId } = req.params;
+            const id = parseInt(groupId);
+            if (typeof id !== "number") {
+                throw new CustomError('비 정상적인 group Id 입니다.', 400);
             }
-        });
-        res.status(200).send(updatedGroup);
+
+            const updatedGroup = await prismaClient.group.update({
+                where: { id: id },
+                data: {
+                    likes: { increment: 1 }
+                },
+                select: {
+                    id: true,
+                    likes: true
+                }
+            });
+            res.status(200).send(updatedGroup);
+        } catch (error) {
+            next(error);
+        }
     }
 
-    async DeleteGroupLike(req, res) {
-        const { groupId } = req.params;
-        const id = parseInt(groupId);
-        // assert(req.params, MinusGroupLike);
-        const updatedGroup = await prismaClient.group.update({
-            where: { id: id },
-            data: {
-                likes: { decrement: 1 }
-            },
-            select: {//select안에 있는 필드만 updatedGroup에 할당시켜줘
-                id: true,
-                likes: true
+    async DeleteGroupLike(req, res, next) {
+        try {
+            const { groupId } = req.params;
+            const id = parseInt(groupId);
+            if (typeof id !== "number") {
+                throw new CustomError('비 정상적인 group Id 입니다.', 400);
             }
-        });
-        res.status(200).send(updatedGroup);
+
+            const updatedGroup = await prismaClient.group.update({
+                where: { id: id },
+                data: {
+                    likes: { decrement: 1 }
+                },
+                select: {//select안에 있는 필드만 updatedGroup에 할당시켜줘
+                    id: true,
+                    likes: true
+                }
+            });
+            res.status(200).send(updatedGroup);
+        } catch (error) {
+            next(error);
+        }
     }
 }
