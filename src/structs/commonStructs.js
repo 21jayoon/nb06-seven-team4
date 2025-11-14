@@ -1,6 +1,6 @@
 import { coerce, integer, object, string, defaulted, optional, enums, nonempty } from 'superstruct';
 
-const integerString = coerce(integer(), string(), (value) => parseInt(value));
+export const integerString = coerce(integer(), string(), (value) => parseInt(value));
 
 const orderEnum = enums(['asc', 'desc']);
 const orderByEnum = enums(['likeCount', 'participantCount', 'createdAt']);

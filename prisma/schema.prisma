@@ -25,7 +25,7 @@ model Group {
   discordserverinviteurl String?
   goalNumber             Int
   likes                  Int              @default(0) 
-  groupLike              GroupLike[]
+  //groupLike              GroupLike[]
   participants           Participant[]
   exerciserecords        ExerciseRecord[]
   createdAt              DateTime         @default(now())
@@ -44,19 +44,18 @@ model Participant {
   exerciserecords ExerciseRecord[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  groupLike       GroupLike[]
+  // groupLike       GroupLike[]
 
   @@unique([groupid, nickname])
 }
 
-model GroupLike {
-  participantId Int
-  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  groupId       Int
-  group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-
-  @@id([participantId, groupId])
-}
+// model GroupLike {
+//   participantId Int
+//   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+//   groupId       Int
+//   group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+//   @@id([participantId, groupId])
+// }
 
 model ExerciseRecord {
   id            Int          @id @default(autoincrement())
@@ -79,12 +78,12 @@ model ExerciseRecord {
 }
 
 model Medal {
-  id        Int       @id @default(autoincrement())
-  type      medalType
+  id        Int      @id @default(autoincrement())
+  type      Type
   groupid   Int
-  group     Group     @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum exerciseType {
@@ -93,7 +92,7 @@ enum exerciseType {
   SWIM
 }
 
-enum medalType {
+enum Type {
   OVERTENMEMBER
   OVERHUNDREADRECORD
   OVERHUNDREADLIKE
