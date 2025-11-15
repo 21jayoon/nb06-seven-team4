@@ -11,5 +11,5 @@ export const pageParamsStruct = object({
     limit: defaulted(integerString, 10),
     order: defaulted(orderEnum, 'desc'),
     orderBy: defaulted(orderByEnum, 'createdAt'),
-    search: optional(nonempty(string())),
+    search: optional(string()),
 });
