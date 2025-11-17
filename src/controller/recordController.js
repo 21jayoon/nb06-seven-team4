@@ -73,6 +73,19 @@ export class recordController {
                     nickname: newRecord.authorNickname
                 }
             };
+            const webhookUrl = participant.groupid.discordwebhookurl;
+            if (webhookUrl) {
+                const recordData = {
+                    nickname: authorNickname,
+                    exerciseType,
+                    time,
+                    distance,
+                    description,
+                    photos
+                };
+                // 위에서 만든 함수 호출
+                sendDiscordNotification(webhookUrl, recordData, participant.group.groupName);
+            }
             res.status(201).send(response);
         }
         catch (err) {
