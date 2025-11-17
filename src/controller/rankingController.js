@@ -1,5 +1,5 @@
 import prisma from '../libs/database.js';
-import AppError from '../libs/AppError.js';
+import AppError from '../libs/error/appError.js';
 
 class RankingController {
   // 그룹 랭킹 조회

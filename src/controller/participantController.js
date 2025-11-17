@@ -1,6 +1,6 @@
 import prisma from '../libs/database.js';
 import { checkAndAwardBadges } from '../libs/badge.js';
-import AppError from '../libs/AppError.js';
+import AppError from '../libs/error/appError.js';
 
 class ParticipantController {
   // 그룹 참여
