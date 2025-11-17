@@ -46,14 +46,23 @@ const errorHandler = (err, req, res, next) => {
     }
   }
 
-  // 기본 에러 처리
+  // AppError 또는 커스텀 에러 처리
   const statusCode = err.statusCode || 500;
   const message = err.message || '서버 내부 오류가 발생했습니다.';
+  const path = err.path || null;
 
-  res.status(statusCode).json({
+  // 응답 객체 구성
+  const response = {
     success: false,
     message: message,
-  });
+  };
+
+  // path가 있으면 추가
+  if (path) {
+    response.path = path;
+  }
+
+  res.status(statusCode).json(response);
 };
 
 export default errorHandler;

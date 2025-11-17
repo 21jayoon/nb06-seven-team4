@@ -1,4 +1,5 @@
 import prisma from '../libs/database.js';
+import AppError from '../libs/AppError.js';
 
 class RankingController {
   // 그룹 랭킹 조회
@@ -8,22 +9,14 @@ class RankingController {
       const groupId = parseInt(id);
 
       if (isNaN(groupId)) {
-        return res.status(400).json({
-          success: false,
-          path: 'id',
-          message: 'Invalid group ID',
-        });
+        return next(new AppError('Invalid group ID', 400, 'id'));
       }
 
       const { duration = 'weekly' } = req.query; // weekly, monthly
 
       // duration 유효성 검사
       if (duration !== 'weekly' && duration !== 'monthly') {
-        return res.status(400).json({
-          success: false,
-          path: 'duration',
-          message: "duration must be 'weekly' or 'monthly'",
-        });
+        return next(new AppError("duration must be 'weekly' or 'monthly'", 400, 'duration'));
       }
 
       // 기간 계산
@@ -43,10 +36,7 @@ class RankingController {
       });
 
       if (!group) {
-        return res.status(404).json({
-          success: false,
-          message: '그룹을 찾을 수 없습니다.',
-        });
+        return next(new AppError('그룹을 찾을 수 없습니다.', 404));
       }
 
       // 기간 내 기록 조회 (participantId 포함)
@@ -107,11 +97,7 @@ class RankingController {
       const recordIdInt = parseInt(recordId);
 
       if (isNaN(recordIdInt)) {
-        return res.status(400).json({
-          success: false,
-          path: 'recordId',
-          message: 'Invalid record ID',
-        });
+        return next(new AppError('Invalid record ID', 400, 'recordId'));
       }
 
       // 기록 조회 (운동 종류, 설명, 사진, 시간, 거리, 닉네임 포함)
@@ -132,10 +118,7 @@ class RankingController {
       });
 
       if (!record) {
-        return res.status(404).json({
-          success: false,
-          message: '기록을 찾을 수 없습니다.',
-        });
+        return next(new AppError('기록을 찾을 수 없습니다.', 404));
       }
 
       // 응답 형식
