@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "exerciseType" AS ENUM ('RUN', 'CYCLE', 'SWIM');
+CREATE TYPE "exerciseType" AS ENUM ('run', 'cycle', 'swim');
 
 -- CreateEnum
 CREATE TYPE "Type" AS ENUM ('OVERTENMEMBER', 'OVERHUNDREADRECORD', 'OVERHUNDREADLIKE');
@@ -48,6 +48,7 @@ CREATE TABLE "ExerciseRecord" (
     "authorNickname" TEXT NOT NULL,
     "authorPassword" TEXT NOT NULL,
     "groupId" INTEGER NOT NULL,
+    "participantId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -75,6 +76,9 @@ CREATE UNIQUE INDEX "Participant_groupid_nickname_key" ON "Participant"("groupid
 CREATE INDEX "ExerciseRecord_groupId_idx" ON "ExerciseRecord"("groupId");
 
 -- CreateIndex
+CREATE INDEX "ExerciseRecord_participantId_idx" ON "ExerciseRecord"("participantId");
+
+-- CreateIndex
 CREATE INDEX "ExerciseRecord_groupId_createdAt_idx" ON "ExerciseRecord"("groupId", "createdAt");
 
 -- AddForeignKey
@@ -82,6 +86,9 @@ ALTER TABLE "Participant" ADD CONSTRAINT "Participant_groupid_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Medal" ADD CONSTRAINT "Medal_groupid_fkey" FOREIGN KEY ("groupid") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;

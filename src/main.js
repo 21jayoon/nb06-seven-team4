@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
 app.use('/groups', groupRouter);
-app.use('/groups/:id/records', recordRouter);
+app.use('/groups/:groupid/records', recordRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {

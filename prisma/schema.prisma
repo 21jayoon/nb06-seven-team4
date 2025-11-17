@@ -33,15 +33,16 @@ model Group {
 }
 
 model Participant {
-  id        Int      @id @default(autoincrement())
-  nickname  String
-  password  String
-  isowner   Boolean
-  groupid   Int
-  group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  hasLiked  Boolean
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int              @id @default(autoincrement())
+  nickname        String
+  password        String
+  isowner         Boolean
+  groupid         Int
+  group           Group            @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  hasLiked        Boolean
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  exerciseRecords ExerciseRecord[]
 
   @@unique([groupid, nickname])
 }
@@ -57,10 +58,13 @@ model ExerciseRecord {
   authorPassword String
   groupId        Int
   group          Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  participantId  Int
+  participant    Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
   @@index([groupId])
+  @@index([participantId])
   @@index([groupId, createdAt])
 }
 
@@ -74,9 +78,9 @@ model Medal {
 }
 
 enum exerciseType {
-  RUN
-  CYCLE
-  SWIM
+  run
+  cycle
+  swim
 }
 
 enum Type {

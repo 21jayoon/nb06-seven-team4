@@ -2,7 +2,7 @@ import express from 'express';
 import { recordController } from '../controller/recordController.js';
 import { catchAsync } from '../libs/catchAsync.js';
 
-const recordRouter = express.Router();
+const recordRouter = express.Router({ mergeParams: true });
 
 
 const RecordController = new recordController();
