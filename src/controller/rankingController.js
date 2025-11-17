@@ -77,11 +77,12 @@ class RankingController {
       // 랭킹 배열로 변환 및 정렬 (기록 횟수 많은 순)
       const ranking = Object.values(rankingMap).sort((a, b) => b.recordCount - a.recordCount);
 
-      // 응답 형식 정리 (닉네임, 기록 횟수, 누적 시간)
+      // 응답 형식 정리 (participantId, 닉네임, 기록 횟수, 누적 시간)
       const response = ranking.map((item) => ({
+        participantId: item.participantId,
         nickname: item.nickname,
         recordCount: item.recordCount,
-        totalTime: item.recordTime,
+        recordTime: item.recordTime,
       }));
 
       res.json(response);

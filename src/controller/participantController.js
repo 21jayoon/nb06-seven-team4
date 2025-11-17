@@ -1,5 +1,4 @@
 import prisma from '../libs/database.js';
-import { checkAndAwardBadges } from '../libs/badge.js';
 import AppError from '../libs/error/appError.js';
 
 class ParticipantController {
@@ -62,9 +61,6 @@ class ParticipantController {
           hasLiked: false,
         },
       });
-
-      // 배지 체크
-      await checkAndAwardBadges(groupId);
 
       // 업데이트된 그룹 정보 조회
       const updatedGroup = await prisma.group.findUnique({
