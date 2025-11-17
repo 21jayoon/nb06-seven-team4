@@ -84,10 +84,71 @@ class RankingController {
         rankingMap[nickname].recordTime += record.playtime;
       });
 
-      // 랭킹 배열로 변환 및 정렬
+      // 랭킹 배열로 변환 및 정렬 (기록 횟수 많은 순)
       const ranking = Object.values(rankingMap).sort((a, b) => b.recordCount - a.recordCount);
 
-      res.json(ranking);
+      // 응답 형식 정리 (닉네임, 기록 횟수, 누적 시간)
+      const response = ranking.map((item) => ({
+        nickname: item.nickname,
+        recordCount: item.recordCount,
+        totalTime: item.recordTime,
+      }));
+
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // 기록 상세 조회
+  async getRecordDetail(req, res, next) {
+    try {
+      const { recordId } = req.params;
+      const recordIdInt = parseInt(recordId);
+
+      if (isNaN(recordIdInt)) {
+        return res.status(400).json({
+          success: false,
+          path: 'recordId',
+          message: 'Invalid record ID',
+        });
+      }
+
+      // 기록 조회 (운동 종류, 설명, 사진, 시간, 거리, 닉네임 포함)
+      const record = await prisma.exerciseRecord.findUnique({
+        where: { id: recordIdInt },
+        select: {
+          exercisetype: true,
+          description: true,
+          images: true,
+          playtime: true,
+          distance: true,
+          participant: {
+            select: {
+              nickname: true,
+            },
+          },
+        },
+      });
+
+      if (!record) {
+        return res.status(404).json({
+          success: false,
+          message: '기록을 찾을 수 없습니다.',
+        });
+      }
+
+      // 응답 형식
+      const response = {
+        exercisetype: record.exercisetype,
+        description: record.description || '',
+        images: record.images || [],
+        playtime: record.playtime,
+        distance: record.distance,
+        nickname: record.participant.nickname,
+      };
+
+      res.json(response);
     } catch (error) {
       next(error);
     }
