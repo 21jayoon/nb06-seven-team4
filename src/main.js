@@ -6,6 +6,7 @@ import groupRouter from './router/groupRouter.js';
 import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/error/errorHandler.js';
+import recordRouter from './router/recordRouter.js';
 
 const app = express();
 

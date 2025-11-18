@@ -1,4 +1,4 @@
-import { CustomError } from '../libs/errorHandler.js';
+import { CustomError } from '../libs/error/errorHandler.js';
 import { prismaClient } from '../libs/constants.js';
 import { CreateRecordStruct, GetRecordStruct } from '../structs/recordStructs.js';
 import { assert, create } from 'superstruct';
