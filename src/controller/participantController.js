@@ -27,10 +27,10 @@ class ParticipantController {
       const group = await prisma.group.findUnique({
         where: { id: groupId },
         include: {
-          participants: {
+          participant: {
             orderBy: { createdAt: 'asc' },
           },
-          medals: true,
+          medal: true,
         },
       });
 
@@ -66,16 +66,16 @@ class ParticipantController {
       const updatedGroup = await prisma.group.findUnique({
         where: { id: groupId },
         include: {
-          participants: {
+          participant: {
             orderBy: { createdAt: 'asc' },
           },
-          medals: true,
+          medal: true,
         },
       });
 
       // owner 찾기 (isowner 필드 사용 또는 nickname 매칭)
       let owner = null;
-      const ownerParticipant = updatedGroup.participants.find(
+      const ownerParticipant = updatedGroup.participant.find(
         (p) => p.isowner || p.nickname === updatedGroup.nickname,
       );
       if (ownerParticipant) {
@@ -106,7 +106,7 @@ class ParticipantController {
         likeCount: updatedGroup.likes,
         tags: updatedGroup.tag,
         owner: owner,
-        participants: updatedGroup.participants.map((p) => ({
+        participants: updatedGroup.participant.map((p) => ({
           id: p.id,
           nickname: p.nickname,
           createdAt: p.createdAt.getTime(),
@@ -114,7 +114,7 @@ class ParticipantController {
         })),
         createdAt: updatedGroup.createdAt.getTime(),
         updatedAt: updatedGroup.updatedAt.getTime(),
-        badges: updatedGroup.medals.map((m) => m.medaltype),
+        badges: updatedGroup.medal.map((m) => m.medaltype),
       };
 
       res.status(201).json(response);
