@@ -55,21 +55,22 @@ const corsOriginChecker = (origin, callback) => {
   callback(null, isAllowed);
 };
 
-const corsOptions = {
-  origin: corsOriginChecker,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: getCorsOrigin(),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터
-app.use('/groups', groupRouter);
-app.use('/groups', participantRouter);
-app.use('/groups', rankingRouter);
+app.use('/', participantRouter);
+app.use('/', rankingRouter);
+app.use('/', groupRouter);
+app.use('/', recordRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {

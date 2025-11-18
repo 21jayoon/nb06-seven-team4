@@ -24,8 +24,7 @@ model Group {
   discordwebhookurl      String?
   discordserverinviteurl String?
   goalNumber             Int
-  likes                  Int              @default(0) 
-  groupLike              GroupLike[]
+  likes                  Int              @default(0)
   participants           Participant[]
   exerciserecords        ExerciseRecord[]
   createdAt              DateTime         @default(now())
@@ -41,37 +40,28 @@ model Participant {
   groupid         Int
   group           Group            @relation(fields: [groupid], references: [id], onDelete: Cascade)
   hasLiked        Boolean
-  exerciserecords ExerciseRecord[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  groupLike       GroupLike[]
+  exerciseRecords ExerciseRecord[]
 
   @@unique([groupid, nickname])
 }
 
-model GroupLike {
-  participantId Int
-  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  groupId       Int
-  group         Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-
-  @@id([participantId, groupId])
-}
-
 model ExerciseRecord {
-  id            Int          @id @default(autoincrement())
-  exercisetype  exerciseType
-  description   String?
-  playtime      Int
-  distance      Float
-  images        String[]
-  password      String
-  participantId Int
-  participant   Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  groupId       Int
-  group         Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id             Int          @id @default(autoincrement())
+  exerciseType   exerciseType
+  description    String?
+  time           Int
+  distance       Float
+  photos         String[]
+  authorNickname String
+  authorPassword String
+  groupId        Int
+  group          Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  participantId  Int
+  participant    Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([groupId])
   @@index([participantId])
@@ -79,21 +69,21 @@ model ExerciseRecord {
 }
 
 model Medal {
-  id        Int       @id @default(autoincrement())
-  type      medalType
+  id        Int      @id @default(autoincrement())
+  type      Type
   groupid   Int
-  group     Group     @relation(fields: [groupid], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  group     Group    @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum exerciseType {
-  RUN
-  CIYCLE
-  SWIM
+  run
+  cycle
+  swim
 }
 
-enum medalType {
+enum Type {
   OVERTENMEMBER
   OVERHUNDREADRECORD
   OVERHUNDREADLIKE

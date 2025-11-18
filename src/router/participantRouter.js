@@ -5,7 +5,7 @@ const router = express.Router();
 
 // 그룹 참여
 router.post(
-  '/:groupId/participants',
+  '/groups/:groupId/participants',
   (req, res, next) => {
     req.params.id = req.params.groupId;
     next();
@@ -15,7 +15,7 @@ router.post(
 
 // 그룹 참여 취소
 router.delete(
-  '/:groupId/participants',
+  '/groups/:groupId/participants',
   (req, res, next) => {
     req.params.id = req.params.groupId;
     next();
@@ -24,9 +24,9 @@ router.delete(
 );
 
 // 그룹 참여 (기존 경로 - 호환성 유지)
-router.post('/:id/join', participantController.joinGroup);
+router.post('/groups/:id/join', participantController.joinGroup);
 
 // 그룹 참여 취소 (기존 경로 - 호환성 유지)
-router.delete('/:id/leave', participantController.leaveGroup);
+router.delete('/groups/:id/leave', participantController.leaveGroup);
 
 export default router;

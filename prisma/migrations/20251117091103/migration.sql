@@ -1,13 +1,13 @@
 -- CreateEnum
-CREATE TYPE "exerciseType" AS ENUM ('RUN', 'CIYCLE', 'SWIM');
+CREATE TYPE "exerciseType" AS ENUM ('run', 'cycle', 'swim');
 
 -- CreateEnum
-CREATE TYPE "medalType" AS ENUM ('OVERTENMEMBER', 'OVERHUNDREADRECORD', 'OVERHUNDREADLIKE');
+CREATE TYPE "Type" AS ENUM ('OVERTENMEMBER', 'OVERHUNDREADRECORD', 'OVERHUNDREADLIKE');
 
 -- CreateTable
 CREATE TABLE "Group" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "groupName" TEXT NOT NULL,
     "description" TEXT,
     "nickname" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -15,8 +15,8 @@ CREATE TABLE "Group" (
     "tag" TEXT[],
     "discordwebhookurl" TEXT,
     "discordserverinviteurl" TEXT,
-    "goldnumber" INTEGER NOT NULL,
-    "likes" INTEGER NOT NULL,
+    "goalNumber" INTEGER NOT NULL,
+    "likes" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -38,22 +38,17 @@ CREATE TABLE "Participant" (
 );
 
 -- CreateTable
-CREATE TABLE "GroipLike" (
-    "participantId" INTEGER NOT NULL,
-    "groupId" INTEGER NOT NULL,
-
-    CONSTRAINT "GroipLike_pkey" PRIMARY KEY ("participantId","groupId")
-);
-
--- CreateTable
 CREATE TABLE "ExerciseRecord" (
     "id" SERIAL NOT NULL,
-    "exercisetype" "exerciseType" NOT NULL,
+    "exerciseType" "exerciseType" NOT NULL,
     "description" TEXT,
-    "playtime" INTEGER NOT NULL,
+    "time" INTEGER NOT NULL,
     "distance" DOUBLE PRECISION NOT NULL,
-    "images" TEXT[],
-    "password" TEXT NOT NULL,
+    "photos" TEXT[],
+    "authorNickname" TEXT NOT NULL,
+    "authorPassword" TEXT NOT NULL,
+    "groupId" INTEGER NOT NULL,
+    "participantId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -63,7 +58,7 @@ CREATE TABLE "ExerciseRecord" (
 -- CreateTable
 CREATE TABLE "Medal" (
     "id" SERIAL NOT NULL,
-    "medaltype" "medalType" NOT NULL,
+    "type" "Type" NOT NULL,
     "groupid" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -72,19 +67,28 @@ CREATE TABLE "Medal" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Group_name_key" ON "Group"("name");
+CREATE UNIQUE INDEX "Group_groupName_key" ON "Group"("groupName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Participant_groupid_nickname_key" ON "Participant"("groupid", "nickname");
+
+-- CreateIndex
+CREATE INDEX "ExerciseRecord_groupId_idx" ON "ExerciseRecord"("groupId");
+
+-- CreateIndex
+CREATE INDEX "ExerciseRecord_participantId_idx" ON "ExerciseRecord"("participantId");
+
+-- CreateIndex
+CREATE INDEX "ExerciseRecord_groupId_createdAt_idx" ON "ExerciseRecord"("groupId", "createdAt");
 
 -- AddForeignKey
 ALTER TABLE "Participant" ADD CONSTRAINT "Participant_groupid_fkey" FOREIGN KEY ("groupid") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GroipLike" ADD CONSTRAINT "GroipLike_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GroipLike" ADD CONSTRAINT "GroipLike_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Medal" ADD CONSTRAINT "Medal_groupid_fkey" FOREIGN KEY ("groupid") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;

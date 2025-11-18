@@ -311,63 +311,6 @@ export class GroupController {
       next(error);
     }
   }
-  async GetGroupList(req, res) {
-    const {
-      page = 1,
-      limit = 10,
-      order = 'desc',
-      orderBy = 'createdAt',
-      search,
-    } = create(req.query, GetGroupListParamsStruct);
-    const where = {
-      title: search ? { contains: search } : undefined,
-    };
-
-    const totalCount = await prismaClient.group.count({ where });
-
-    let orderBySetting;
-    switch (orderBy) {
-      case 'likeCount':
-        {
-          orderBySetting = { likeCount: order };
-        }
-        break;
-      case 'participantCount':
-        {
-          orderBySetting = { participantCount: order };
-        }
-        break;
-      case 'createdAt':
-        {
-          orderBySetting = { createdAt: order };
-        }
-        break;
-      default:
-        {
-          orderBySetting = { createdAt: order };
-        }
-        break;
-    }
-
-    const groups = await prismaClient.group.findMany({
-      select: {
-        id: true,
-        groupName: true,
-        description: true,
-        nickname: true,
-        image: true,
-        tag: true,
-        goalNumber: true,
-        likes: true,
-        createdAt: true,
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: orderBySetting,
-      where,
-    });
-    return res.send({ list: groups, totalCount });
-  }
 
   async PostGroupLike(req, res) {
     const { groupId } = req.params;
