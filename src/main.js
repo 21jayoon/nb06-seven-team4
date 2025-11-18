@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { PORT } from './libs/constants.js';
 import express from 'express';
 import cors from 'cors';
+import groupRouter from './router/groupRouter.js';
 import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/error/errorHandler.js';
@@ -66,6 +67,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터
+app.use('/groups', groupRouter);
 app.use('/groups', participantRouter);
 app.use('/groups', rankingRouter);
 
