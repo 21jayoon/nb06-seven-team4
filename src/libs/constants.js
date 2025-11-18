@@ -4,3 +4,4 @@ dotenv.config();
 
 export const PORT = process.env.PORT || 3000;
 export const prismaClient = new PrismaClient;
+export const imageUploadLimit = 3;
