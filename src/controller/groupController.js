@@ -82,7 +82,7 @@ export class GroupController {
         search,
       } = create(req.query, GetGroupListParamsStruct);
       const where = {
-        title: search ? { contains: search } : undefined,
+        ...(search && search.trim() ? { groupName: { contains: search } } : {}),
       };
 
       const totalCount = await prismaClient.group.count({ where });
