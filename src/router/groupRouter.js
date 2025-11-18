@@ -22,9 +22,9 @@ groupRouter.patch('/groups/:groupId', catchAsync(groupController.updateGroup));
 groupRouter.delete('/groups/:groupId', catchAsync(groupController.deleteGroup));
 
 // 그룹 좋아요
-groupRouter.post('/:groupId/likes', catchAsync(groupController.PostGroupLike));
+groupRouter.post('/groups/:groupId/likes', catchAsync(groupController.PostGroupLike));
 
 // 그룹 좋아요 취소
-groupRouter.delete('/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
+groupRouter.delete('/groups/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
 
 export default groupRouter;

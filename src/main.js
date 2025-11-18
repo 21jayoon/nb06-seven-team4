@@ -6,6 +6,7 @@ import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/errorHandler.js';
 import groupRouter from './router/groupRouter.js';
+import recordRouter from './router/recordRouter.js';
 
 const app = express();
 
@@ -30,19 +31,20 @@ const getCorsOrigin = () => {
 
 app.use(
   cors({
-  origin: getCorsOrigin(),
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-})
+    origin: getCorsOrigin(),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터
-app.use('/groups', participantRouter);
-app.use('/groups', rankingRouter);
+app.use('/', participantRouter);
+app.use('/', rankingRouter);
 app.use('/', groupRouter);
+app.use('/', recordRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {
