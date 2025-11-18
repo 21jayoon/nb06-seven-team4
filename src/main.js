@@ -5,6 +5,7 @@ import cors from 'cors';
 import groupRouter from './router/groupRouter.js';
 import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
+import recordRouter from './router/recordRouter.js';
 import errorHandler from './libs/error/errorHandler.js';
 
 const app = express();
@@ -61,7 +62,7 @@ app.use(
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-  })
+  }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
