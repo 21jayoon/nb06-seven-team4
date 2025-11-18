@@ -1,5 +1,5 @@
 import prisma from '../libs/database.js';
-import { checkAndAwardBadges } from '../libs/badge.js';
+import AppError from '../libs/error/appError.js';
 
 class ParticipantController {
   // 그룹 참여
@@ -9,29 +9,18 @@ class ParticipantController {
       const { nickname, password } = req.body;
 
       if (!nickname) {
-        return res.status(400).json({
-          success: false,
-          path: 'nickname',
-          message: 'nickname is required',
-        });
+        return next(new AppError('nickname is required', 400, 'nickname'));
       }
 
       if (!password) {
-        return res.status(400).json({
-          success: false,
-          path: 'password',
-          message: 'password is required',
-        });
+        return next(new AppError('password is required', 400, 'password'));
       }
 
       // 그룹 ID 파싱
       const groupId = parseInt(id);
 
       if (isNaN(groupId)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid group ID',
-        });
+        return next(new AppError('Invalid group ID', 400));
       }
 
       // 그룹 존재 확인
@@ -46,10 +35,7 @@ class ParticipantController {
       });
 
       if (!group) {
-        return res.status(404).json({
-          success: false,
-          message: '그룹을 찾을 수 없습니다.',
-        });
+        return next(new AppError('그룹을 찾을 수 없습니다.', 404));
       }
 
       // 중복 닉네임 체크
@@ -63,10 +49,7 @@ class ParticipantController {
       });
 
       if (existingParticipant) {
-        return res.status(409).json({
-          success: false,
-          message: '이미 사용 중인 닉네임입니다.',
-        });
+        return next(new AppError('이미 사용 중인 닉네임입니다.', 409));
       }
 
       const participant = await prisma.participant.create({
@@ -78,9 +61,6 @@ class ParticipantController {
           hasLiked: false,
         },
       });
-
-      // 배지 체크
-      await checkAndAwardBadges(groupId);
 
       // 업데이트된 그룹 정보 조회
       const updatedGroup = await prisma.group.findUnique({
@@ -134,7 +114,7 @@ class ParticipantController {
         })),
         createdAt: updatedGroup.createdAt.getTime(),
         updatedAt: updatedGroup.updatedAt.getTime(),
-        badges: updatedGroup.medals.map((m) => m.medaltype),
+        badges: updatedGroup.medals.map((m) => m.type),
       };
 
       res.status(201).json(response);
@@ -177,28 +157,16 @@ class ParticipantController {
       }
 
       if (!nickname) {
-        return res.status(400).json({
-          success: false,
-          path: 'nickname',
-          message: 'nickname is required',
-        });
+        return next(new AppError('nickname is required', 400, 'nickname'));
       }
 
       if (!password) {
-        return res.status(400).json({
-          success: false,
-          path: 'password',
-          message: 'password is required',
-        });
+        return next(new AppError('password is required', 400, 'password'));
       }
 
       const groupId = parseInt(id);
       if (isNaN(groupId)) {
-        return res.status(400).json({
-          success: false,
-          path: 'id',
-          message: 'Invalid group ID',
-        });
+        return next(new AppError('Invalid group ID', 400, 'id'));
       }
 
       const participant = await prisma.participant.findUnique({
@@ -211,18 +179,11 @@ class ParticipantController {
       });
 
       if (!participant) {
-        return res.status(404).json({
-          success: false,
-          message: '참여자를 찾을 수 없습니다.',
-        });
+        return next(new AppError('참여자를 찾을 수 없습니다.', 404));
       }
 
       if (participant.password !== password) {
-        return res.status(401).json({
-          success: false,
-          path: 'password',
-          message: 'Wrong password',
-        });
+        return next(new AppError('Wrong password', 401, 'password'));
       }
 
       // 참여 취소 시 해당 닉네임의 운동 기록 모두 삭제 (Cascade로 자동 삭제)

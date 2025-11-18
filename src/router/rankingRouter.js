@@ -13,4 +13,7 @@ router.get(
   rankingController.getGroupRanking,
 );
 
+// 기록 상세 조회
+router.get('/records/:recordId', rankingController.getRecordDetail);
+
 export default router;

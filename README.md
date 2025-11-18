@@ -1,108 +1,202 @@
-## Team 4
-https://www.notion.so/29ffc892a16f81829db5c63ea7ca2167?source=copy_link
------
-### 팀원 구성
-윤정아 (개인 Github 링크)
-김지수 (개인 Github 링크)
-유인학 (개인 Github 링크)
-이주은 (개인 Github 링크)
+# Seven Team 4 – Group Exercise API
 
-### 프로젝트 소개
-운동 커뮤니티 사이트의 백엔드 시스템 구축
-프로젝트 기간: 2025.11.3 ~ 2024.11.20
+Exercise-record 관리용 백엔드 서비스입니다.  
+그룹 참여/탈퇴, 운동 기록 집계(주간·월간), 기록 상세 조회 기능을 제공합니다.
 
-### 기술 스택
-Backend: Express.js, PrismaORM
-Database: postgreSQL
-공통 Tool: Git & Github, Notion, Discord
+## Tech Stack
 
------
-### 팀원별 구현 기능 상세
-윤정아
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+| Category | Tools                   |
+| -------- | ----------------------- |
+| Runtime  | Node.js 20+, Express.js |
+| ORM      | Prisma                  |
+| Database | PostgreSQL              |
+| Etc.     | dotenv, cors            |
 
-example)
-소셜 로그인 API
-구글 소셜 로그인 API를 활용하여 소셜 로그인 기능을 구현
-로그인 후 추가 정보 입력을 위한 API 엔드포인트 개발
-회원 추가 정보 입력 API
-회원 유형(관리자, 학생)에 따른 조건부 입력 처리 API 구현
+## Project Structure
 
+```
+src/
+ ├─ controller/
+ │   ├─ participantController.js   # 그룹 참가/탈퇴
+ │   └─ rankingController.js       # 랭킹·기록 조회
+ ├─ router/
+ │   ├─ participantRouter.js
+ │   └─ rankingRouter.js
+ ├─ libs/
+ │   ├─ database.js                # Prisma Client
+ │   ├─ constants.js
+ │   └─ error/
+ │       ├─ appError.js            # 커스텀 에러
+ │       └─ errorHandler.js        # Global Error Handler
+ └─ main.js                        # Express 앱 엔트리
+prisma/
+ └─ schema.prisma
+```
 
-김지수
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+## Getting Started
 
-example)
-회원별 권한 관리
-사용자의 역할에 따라 권한을 설정하는 API 구현
-관리자 페이지와 일반 사용자 페이지를 위한 조건부 라우팅 기능 개발
-반응형 레이아웃 API
-클라이언트에서 전달된 요청에 맞춰 반응형 레이아웃을 위한 API 엔드포인트 구현
+```bash
+# install
+npm install
 
+# env (예: DATABASE_URL, PORT, CORS_ORIGIN)
+cp .env.example .env   # 없으면 직접 생성
 
-유인학
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+# prisma
+npx prisma migrate deploy   # or npx prisma db push
+npx prisma generate
 
-수강생 정보 관리 API
-fetch(GET)을 사용하여 학생의 수강 정보를 조회하는 API 엔드포인트 개발
-수강 정보의 반응형 UI 구성
-공용 Button API
-공통으로 사용할 버튼 기능을 처리하는 API 구현
+# run
+npm start
+```
 
+환경 변수
 
-이주은
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+| Key            | Description                     |
+| -------------- | ------------------------------- |
+| `DATABASE_URL` | PostgreSQL 연결 문자열          |
+| `PORT`         | 서버 포트 (기본 3000)           |
+| `CORS_ORIGIN`  | 허용할 Origin. `*` 면 전체 허용 |
 
-관리자 API
-Path Parameter를 활용한 동적 라우팅 기능 구현
-fetch(PATCH, DELETE)를 사용하여 학생 정보를 수정하고 탈퇴하는 API 엔드포인트 개발
-CRUD 기능
-학생 정보 CRUD 기능을 제공하는 API 구현
-회원관리 슬라이더
-학생별 정보 목록을 carousel 방식으로 보여주는 API 개발
+## API Overview
 
+| Method   | Endpoint                                         | Description |
+| -------- | ------------------------------------------------ | ----------- |
+| `POST`   | `/groups/:groupId/participants`                  | 그룹 참가   |
+| `DELETE` | `/groups/:groupId/participants`                  | 그룹 탈퇴   |
+| `GET`    | `/groups/:groupId/rank?duration=weekly\|monthly` | 그룹 랭킹   |
+| `GET`    | `/groups/records/:recordId`                      | 기록 상세   |
 
-### 파일 구조
-src
- ┣ config
- ┃ ┗ db.ts
- ┣ controllers
- ┃ ┣ auth.controller.ts
- ┃ ┗ user.controller.ts
- ┣ middleware
- ┃ ┣ auth.middleware.ts
- ┃ ┗ error.middleware.ts
- ┣ models
- ┃ ┣ user.model.ts
- ┃ ┗ course.model.ts
- ┣ routes
- ┃ ┣ auth.routes.ts
- ┃ ┗ user.routes.ts
- ┣ services
- ┃ ┣ auth.service.ts
- ┃ ┗ user.service.ts
- ┣ utils
- ┃ ┣ jwt.ts
- ┃ ┣ constants.ts
- ┃ ┗ logger.ts
- ┣ main.js
- ┗ server.ts
-prisma
- ┣ schema.prisma
- ┗ seed.ts
-.env
-.gitignore
-package.json
-tsconfig.json
-README.md
+### 에러 응답 규칙
 
+모든 핸들러는 `AppError` → `errorHandler`로 전달되며 아래 형식을 반환합니다.
 
-### 구현 홈페이지
-(개발한 홈페이지에 대한 링크 게시)
+```json
+{
+  "success": false,
+  "message": "설명",
+  "path": "필드명(Optional)"
+}
+```
+
+---
+
+## API Details
+
+### 1. 그룹 참가
+
+`POST /groups/:groupId/participants`
+
+```json
+{
+  "nickname": "써밋",
+  "password": "pass1234"
+}
+```
+
+**201 CREATED**
+
+```json
+{
+  "id": 1,
+  "name": "세븐팀",
+  "description": "",
+  "photoUrl": "",
+  "goalRep": 100,
+  "discordWebhookUrl": "",
+  "discordInviteUrl": "",
+  "likeCount": 0,
+  "tags": [],
+  "owner": {
+    "id": 10,
+    "nickname": "리더",
+    "createdAt": 1728956400000,
+    "updatedAt": 1728956400000
+  },
+  "participants": [
+    {
+      "id": 10,
+      "nickname": "리더",
+      "createdAt": 1728956400000,
+      "updatedAt": 1728956400000
+    },
+    {
+      "id": 11,
+      "nickname": "써밋",
+      "createdAt": 1729042800000,
+      "updatedAt": 1729042800000
+    }
+  ],
+  "createdAt": 1728870000000,
+  "updatedAt": 1729042800000,
+  "badges": ["OVERHUNDREADRECORD"]
+}
+```
+
+**400 BAD REQUEST**
+
+```json
+{ "path": "nickname", "message": "nickname is required" }
+```
+
+### 2. 그룹 탈퇴
+
+`DELETE /groups/:groupId/participants`
+
+- JSON, Form-Data, Plain text 모두 처리
+
+```json
+{ "nickname": "써밋", "password": "pass1234" }
+```
+
+Responses
+
+- `204 NO CONTENT`
+- `400 BAD REQUEST` : `{ "path": "nickname", "message": "nickname is required" }`
+- `401 UNAUTHORIZED` : `{ "path": "password", "message": "Wrong password" }`
+
+### 3. 그룹 랭킹
+
+`GET /groups/:groupId/rank?duration=weekly|monthly`
+
+```json
+[
+  {
+    "participantId": 11,
+    "nickname": "써밋",
+    "recordCount": 12,
+    "recordTime": 540
+  },
+  {
+    "participantId": 10,
+    "nickname": "리더",
+    "recordCount": 7,
+    "recordTime": 310
+  }
+]
+```
+
+### 4. 기록 상세
+
+`GET /groups/records/:recordId`
+
+```json
+{
+  "exercisetype": "RUN",
+  "description": "새벽 러닝",
+  "images": ["https://example.com/run-1.jpg", "https://example.com/run-2.jpg"],
+  "playtime": 45,
+  "distance": 10.5,
+  "nickname": "써밋"
+}
+```
+
+---
 
 https://www.codeit.kr/
 
+## Notes
 
-### 프로젝트 회고록
-(제작한 발표자료 링크 혹은 첨부파일 첨부)
-
+- Prisma 모델은 `prisma/schema.prisma` 참고
+- `src/libs/error/appError.js` 로 모든 비즈니스 예외를 표준화
+- README 응답 예시는 실제 데이터에 따라 달라질 수 있습니다.

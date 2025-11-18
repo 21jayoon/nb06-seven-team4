@@ -5,7 +5,6 @@ export const integerString = coerce(integer(), string(), (value) => parseInt(val
 const orderEnum = enums(['asc', 'desc']);
 const orderByEnum = enums(['likeCount', 'participantCount', 'createdAt']);
 
-
 export const pageParamsStruct = object({
     page: defaulted(integerString, 1),
     limit: defaulted(integerString, 10),
