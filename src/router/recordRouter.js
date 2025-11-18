@@ -7,7 +7,7 @@ const recordRouter = express.Router({ mergeParams: true });
 
 const RecordController = new recordController();
 // 그룹 랭킹 조회
-recordRouter.post('/', catchAsync(RecordController.CreateRecords));
-recordRouter.get('/', catchAsync(RecordController.GetRecords));
+recordRouter.post('/groups/:groupid/records', catchAsync(RecordController.CreateRecords));
+recordRouter.get('/groups/:groupid/records', catchAsync(RecordController.GetRecords));
 
 export default recordRouter;

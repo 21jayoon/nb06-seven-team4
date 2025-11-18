@@ -41,10 +41,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 라우터
-app.use('/groups', participantRouter);
-app.use('/groups', rankingRouter);
-app.use('/groups', groupRouter);
-app.use('/groups/:groupid/records', recordRouter);
+app.use('/', participantRouter);
+app.use('/', rankingRouter);
+app.use('/', groupRouter);
+app.use('/', recordRouter);
 
 // 기본 경로
 app.get('/', (req, res) => {
