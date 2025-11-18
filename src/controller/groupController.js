@@ -155,7 +155,7 @@ export class GroupController {
    */
   async getGroupDetails(req, res, next) {
     try {
-      const id = req.params.groupId;
+      const id = parseInt(req.params.groupId);
 
       if (isNaN(id)) {
         throw new CustomError('유효하지 않은 그룹 ID입니다.', 400);
