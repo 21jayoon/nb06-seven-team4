@@ -76,8 +76,14 @@ export class GroupController {
     async getAllGroups(req, res, next) {
         try {
             //쿼리 파람들의 값 유효성 검사
-            const { page = 1, limit = 10, order = 'desc', orderBy = 'createdAt', search } = create(req.query, GetGroupListParamsStruct);
-            const where = {//검색어가 있다면 추가
+            const { 
+                page = 1, 
+                limit = 10, 
+                order = 'desc', 
+                orderBy = 'createdAt', 
+                search 
+            } = create(req.query, GetGroupListParamsStruct);
+            const where = { //검색어가 있다면 추가
                 title: search ? { contains: search } : undefined,
             };
             //api명세서 내 totalCount 가 존재하여 추가
