@@ -45,11 +45,12 @@ npm install
 cp .env.example .env   # 없으면 직접 생성
 
 # prisma
-npx prisma migrate deploy   # or npx prisma db push
+npx prisma migrate deploy 
 npx prisma generate
+npx prisma db seed
 
 # run
-npm start
+npm run dev
 ```
 
 환경 변수
@@ -62,12 +63,18 @@ npm start
 
 ## API Overview
 
-| Method   | Endpoint                                         | Description |
-| -------- | ------------------------------------------------ | ----------- |
-| `POST`   | `/groups/:groupId/participants`                  | 그룹 참가   |
-| `DELETE` | `/groups/:groupId/participants`                  | 그룹 탈퇴   |
-| `GET`    | `/groups/:groupId/rank?duration=weekly\|monthly` | 그룹 랭킹   |
-| `GET`    | `/groups/records/:recordId`                      | 기록 상세   |
+| Method       | Endpoint                                                 | Description   |
+|--------------|----------------------------------------------------------|---------------|
+| `POST`       | `/groups`                                                | 그룹 생성         |
+| `GET`        | `/groups/?page=1&limit=5&orderBy=createdAt&order=desc`   | 그룹 목록 조건 조회   |
+| `GET`        | `/groups/:groupId`                                       | 그룹 상세 조회      |
+| `PATCH`      | `/groups/:groupId`                                       | 그룹 수정         |
+| `DELETE`     | `/groups/:groupId`                                       | 그룹 삭제         |
+| ------------ | -------------------------------------------------------- | ------------- |
+| `POST`       | `/groups/:groupId/participants`                          | 그룹 참여         |
+| `DELETE`     | `/groups/:groupId/participants`                          | 그룹 탈퇴         |
+| `GET`        | `/groups/:groupId/rank?duration=weekly\|monthly`         | 그룹 랭킹         |
+| `GET`        | `/groups/records/:recordId`                              | 기록 상세         |
 
 ### 에러 응답 규칙
 
@@ -85,7 +92,46 @@ npm start
 
 ## API Details
 
-### 1. 그룹 참가
+### 1. 그룹 생성
+`POST /groups`
+
+```json
+{
+  "groupName": "Exercise_IS_FUN",
+  "description": "11월도 운동해요",
+  "nickname": "GOOD_EXERCISE_NICE",
+  "password": "good_exercise_nice",
+  "image": "https://example.com/images/group_logo_A.png",
+  "tags": [
+    "Running"
+  ],
+  "discordwebhookurl": "http://discord.gg/exercise_good",
+  "discordserverinviteurl": "https://discord.gg/exercise_good",
+  "goalNumber": 250
+}
+```
+### 2. 그룹 목록 조회
+`GET /groups/?page=1&limit=5&orderBy=createdAt&order=desc`
+
+
+```markdown
+조건: 
+orderBy 1. likeCount, 2. participantCount, 3. createdAt
+order 1. asc, 2. desc
+```
+
+### 3. 그룹 상세 조회
+
+### 4. 그룹 수정
+
+### 5. 그룹 삭제
+`DELETE /groups/:groupId`
+
+Responses
+
+- `204 NO CONTENT`
+
+### 6. 그룹 참가
 
 `POST /groups/:groupId/participants`
 
@@ -141,7 +187,7 @@ npm start
 { "path": "nickname", "message": "nickname is required" }
 ```
 
-### 2. 그룹 탈퇴
+### 7. 그룹 탈퇴
 
 `DELETE /groups/:groupId/participants`
 
@@ -157,7 +203,7 @@ Responses
 - `400 BAD REQUEST` : `{ "path": "nickname", "message": "nickname is required" }`
 - `401 UNAUTHORIZED` : `{ "path": "password", "message": "Wrong password" }`
 
-### 3. 그룹 랭킹
+### 8. 그룹 랭킹
 
 `GET /groups/:groupId/rank?duration=weekly|monthly`
 
@@ -178,7 +224,7 @@ Responses
 ]
 ```
 
-### 4. 기록 상세
+### 9. 기록 상세
 
 `GET /groups/records/:recordId`
 
