@@ -7,24 +7,24 @@ const groupController = new GroupController();
 
 // API 명세서:
 // 그룹 생성 POST /groups
-groupRouter.post('/', catchAsync(groupController.createGroup));
+groupRouter.post('/groups/', catchAsync(groupController.createGroup));
 
 // 그룹 목록 조회 GET /groups
-groupRouter.get('/', catchAsync(groupController.getAllGroups));
+groupRouter.get('/groups/', catchAsync(groupController.getAllGroups));
 
 // 그룹 좋아요 (/:groupId보다 먼저 와야 함)
-groupRouter.post('/:groupId/likes', catchAsync(groupController.PostGroupLike));
+groupRouter.post('/groups/:groupId/likes', catchAsync(groupController.PostGroupLike));
 
 // 그룹 좋아요 취소 (/:groupId보다 먼저 와야 함)
-groupRouter.delete('/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
+groupRouter.delete('/groups/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
 
 // 그룹 상세 조회 GET /groups/:groupId
-groupRouter.get('/:groupId', catchAsync(groupController.getGroupDetails));
+groupRouter.get('/groups/:groupId', catchAsync(groupController.getGroupDetails));
 
 // 그룹 수정 PATCH /groups/:groupId
-groupRouter.patch('/:groupId', catchAsync(groupController.updateGroup));
+groupRouter.patch('/groups/:groupId', catchAsync(groupController.updateGroup));
 
 // 그룹 삭제 DELETE /groups/:groupId
-groupRouter.delete('/:groupId', catchAsync(groupController.deleteGroup));
+groupRouter.delete('/groups/:groupId', catchAsync(groupController.deleteGroup));
 
 export default groupRouter;
