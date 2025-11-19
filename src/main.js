@@ -68,6 +68,12 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.text({
+    type: ['text/plain', 'text/html'],
+    limit: '1mb',
+  }),
+);
 app.use('/uploads', express.static('uploads'));
 // 라우터
 app.use('/', participantRouter);
