@@ -19,17 +19,31 @@
 ```
 src/
  ├─ controller/
- │   ├─ participantController.js   # 그룹 참가/탈퇴
- │   └─ rankingController.js       # 랭킹·기록 조회
- ├─ router/
- │   ├─ participantRouter.js
- │   └─ rankingRouter.js
+ │   ├─ groupController.js         # 그룹 관련 API
+ │   ├─ imageUpLoadController.js   # 이미지 업로드 API
+ │   ├─ participantController.js   # 그룹 참가/탈퇴 API
+ │   ├─ rankingController.js       # 랭킹 관련 API
+ │   └─ recordController.js        # 운동 기록 관련 API
  ├─ libs/
+ │   ├─ badge.js                   # 배지 부여 조건 확인 
+ │   ├─ catchAsync.js              # 비동기 컨트롤러 래핑
+ │   ├─ constants.js               # 상수
  │   ├─ database.js                # Prisma Client
- │   ├─ constants.js
  │   └─ error/
  │       ├─ appError.js            # 커스텀 에러
  │       └─ errorHandler.js        # Global Error Handler
+ ├─ router/
+ │   ├─ groupRouter.js             # 그룹 관련 라우터
+ │   ├─ imageUpLoadRouter.js       # 이미지 업로드 라우터
+ │   ├─ participantRouter.js       # 그룹 참가/탈퇴 라우터
+ │   ├─ rankingRouter.js           # 랭킹 라우터
+ │   └─ recordRouter.js            # 운동 기록 라우터
+ ├─ structs/
+ │   ├─ commonStructs.js           
+ │   ├─ groupStructs.js            
+ │   └─ recordStructs.js           
+ ├─ utils/
+ │   └─ discord.js                 # 디스코드 웹훅 관련
  └─ main.js                        # Express 앱 엔트리
 prisma/
  └─ schema.prisma
