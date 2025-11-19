@@ -48,7 +48,7 @@ class RankingController {
           },
         },
         select: {
-          playtime: true,
+          time: true,
           participantId: true,
           participant: {
             select: {
@@ -71,7 +71,7 @@ class RankingController {
           };
         }
         rankingMap[nickname].recordCount++;
-        rankingMap[nickname].recordTime += record.playtime;
+        rankingMap[nickname].recordTime += record.time;
       });
 
       // 랭킹 배열로 변환 및 정렬 (기록 횟수 많은 순)
@@ -108,7 +108,7 @@ class RankingController {
           exercisetype: true,
           description: true,
           images: true,
-          playtime: true,
+          time: true,
           distance: true,
           participant: {
             select: {
@@ -127,7 +127,7 @@ class RankingController {
         exercisetype: record.exercisetype,
         description: record.description || '',
         images: record.images || [],
-        playtime: record.playtime,
+        time: record.time,
         distance: record.distance,
         nickname: record.participant.nickname,
       };
