@@ -91,12 +91,12 @@ export class GroupController {
       switch (orderBy) {
         case 'likeCount':
           {
-            orderBySetting = { likeCount: order };
+            orderBySetting = { likes: { _count: order } };
           }
           break;
         case 'participantCount':
           {
-            orderBySetting = { participantCount: order };
+            orderBySetting = { participants: { _count: order } };
           }
           break;
         case 'createdAt':
@@ -119,9 +119,23 @@ export class GroupController {
           nickname: true,
           image: true,
           tag: true,
+          discordwebhookurl: true,
+          discordserverinviteurl: true,
           goalNumber: true,
           likes: true,
           createdAt: true,
+          updatedAt: true,
+          participants: {
+            select: { id: true, nickname: true, createdAt: true, updatedAt: true },
+          },
+          _count: {
+            select: {
+              participants: true,
+            },
+          },
+          medals: {
+            select: { type: true },
+          },
         },
         skip: (page - 1) * limit,
         take: limit,
@@ -177,10 +191,15 @@ export class GroupController {
           createdAt: true,
           updatedAt: true,
           participants: {
-            select: { nickname: true },
+            select: { id: true, nickname: true, createdAt: true, updatedAt: true },
+          },
+          _count: {
+            select: {
+              participants: true,
+            },
           },
           medals: {
-            select: { type: true, createdAt: true },
+            select: { type: true },
           },
         },
       });
