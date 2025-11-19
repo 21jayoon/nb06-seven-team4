@@ -3,6 +3,8 @@
 Exercise-record 관리용 백엔드 서비스입니다.  
 그룹 참여/탈퇴, 운동 기록 집계(주간·월간), 기록 상세 조회 기능을 제공합니다.
 
+배포 링크: https://nb06-seven-team4.onrender.com
+
 ## Tech Stack
 
 | Category | Tools                   |
@@ -192,8 +194,6 @@ Responses
 ```
 
 ---
-
-https://www.codeit.kr/
 
 ## Notes
 
