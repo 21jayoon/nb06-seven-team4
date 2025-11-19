@@ -13,7 +13,7 @@ async function main() {
       tag: [
         "Running"
       ],
-      discordwebhookurl: "http://discord.gg/test-A",
+      discordwebhookurl: "https://discord.com/api/webhooks/123456789/abcdefgh",
       discordserverinviteurl: "https://discord.gg/test-A",
       goalNumber: 50
     },
