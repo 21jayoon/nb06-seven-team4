@@ -7,6 +7,7 @@ import participantRouter from './router/participantRouter.js';
 import rankingRouter from './router/rankingRouter.js';
 import errorHandler from './libs/error/errorHandler.js';
 import recordRouter from './router/recordRouter.js';
+import UploadRouter from './router/imageUpLoadRouter.js';
 
 const app = express();
 const port = PORT || 3000;
@@ -67,12 +68,14 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/uploads', express.static('uploads'));
 // 라우터
 app.use('/', participantRouter);
 app.use('/', rankingRouter);
 app.use('/', groupRouter);
 app.use('/', recordRouter);
+app.use('/images', UploadRouter);
+
 
 // 기본 경로
 app.get('/', (req, res) => {
