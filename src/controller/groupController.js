@@ -91,7 +91,7 @@ export class GroupController {
       switch (orderBy) {
         case 'likeCount':
           {
-            orderBySetting = { likes: { _count: order } };
+            orderBySetting = { likes: order };
           }
           break;
         case 'participantCount':
