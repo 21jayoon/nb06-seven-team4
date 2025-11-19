@@ -3,3 +3,4 @@ node_modules/
 .env
 __http__/
 src/generated/
+.idea/

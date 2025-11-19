@@ -10,6 +10,7 @@ import recordRouter from './router/recordRouter.js';
 import UploadRouter from './router/imageUpLoadRouter.js';
 
 const app = express();
+const port = PORT || 3000;
 
 // 미들웨어
 // CORS 설정: 개발 환경에서는 모든 origin 허용, 프로덕션에서는 환경 변수로 제어
@@ -93,7 +94,6 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // 서버 시작
-const port = PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
