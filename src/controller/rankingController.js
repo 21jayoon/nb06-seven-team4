@@ -48,7 +48,7 @@ class RankingController {
           },
         },
         select: {
-          playtime: true,
+          time: true,
           participantId: true,
           participant: {
             select: {
@@ -71,7 +71,7 @@ class RankingController {
           };
         }
         rankingMap[nickname].recordCount++;
-        rankingMap[nickname].recordTime += record.playtime;
+        rankingMap[nickname].recordTime += record.time;
       });
 
       // 랭킹 배열로 변환 및 정렬 (기록 횟수 많은 순)
@@ -105,10 +105,10 @@ class RankingController {
       const record = await prisma.exerciseRecord.findUnique({
         where: { id: recordIdInt },
         select: {
-          exercisetype: true,
+          exerciseType: true,
           description: true,
-          images: true,
-          playtime: true,
+          photos: true,
+          time: true,
           distance: true,
           participant: {
             select: {
@@ -124,10 +124,10 @@ class RankingController {
 
       // 응답 형식
       const response = {
-        exercisetype: record.exercisetype,
+        exercisetype: record.exerciseType,
         description: record.description || '',
-        images: record.images || [],
-        playtime: record.playtime,
+        images: record.photos || [],
+        playtime: record.time,
         distance: record.distance,
         nickname: record.participant.nickname,
       };
