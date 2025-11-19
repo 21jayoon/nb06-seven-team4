@@ -32,7 +32,6 @@
     "superstruct": "^2.0.2"
   },
   "devDependencies": {
-    "prisma": "^6.19.0",
-    "superstruct": "^2.0.2"
+    "prisma": "^6.19.0"
   }
 }
