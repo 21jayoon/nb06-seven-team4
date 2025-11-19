@@ -70,7 +70,7 @@ app.use(express.urlencoded({ extended: true }));
 // 라우터
 app.use('/', participantRouter);
 app.use('/', rankingRouter);
-app.use('/', groupRouter);
+app.use('/groups', groupRouter);
 app.use('/', recordRouter);
 
 // 기본 경로
