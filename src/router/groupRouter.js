@@ -7,10 +7,10 @@ const groupController = new GroupController();
 
 // API 명세서:
 // 그룹 생성 POST /groups
-groupRouter.post('/groups/', catchAsync(groupController.createGroup));
+groupRouter.post('/groups', catchAsync(groupController.createGroup));
 
 // 그룹 목록 조회 GET /groups
-groupRouter.get('/groups/', catchAsync(groupController.getAllGroups));
+groupRouter.get('/groups', catchAsync(groupController.getAllGroups));
 
 // 그룹 좋아요 (/:groupId보다 먼저 와야 함)
 groupRouter.post('/groups/:groupId/likes', catchAsync(groupController.PostGroupLike));
