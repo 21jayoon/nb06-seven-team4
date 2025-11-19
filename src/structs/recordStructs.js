@@ -1,4 +1,4 @@
-import { object, string, defaulted, optional, enums, min, number, array, partial } from 'superstruct';
+import { object, string, defaulted, optional, enums, min, number, array, size } from 'superstruct';
 import { integerString } from './commonStructs.js';
 
 const ExerciseType = enums(["run", "cycle", "swim"]);
@@ -8,7 +8,7 @@ export const CreateRecordStruct = object({
     description: defaulted(string(), ""),
     time: min(number(), 0),
     distance: min(number(), 0),
-    photos: optional(array(string())),
+    photos: optional(size(array(string()), 0, 3)),
     authorNickname: string(),
     authorPassword: string()
 });
