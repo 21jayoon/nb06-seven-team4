@@ -12,6 +12,12 @@ groupRouter.post('/', catchAsync(groupController.createGroup));
 // 그룹 목록 조회 GET /groups
 groupRouter.get('/', catchAsync(groupController.getAllGroups));
 
+// 그룹 좋아요 (/:groupId보다 먼저 와야 함)
+groupRouter.post('/:groupId/likes', catchAsync(groupController.PostGroupLike));
+
+// 그룹 좋아요 취소 (/:groupId보다 먼저 와야 함)
+groupRouter.delete('/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
+
 // 그룹 상세 조회 GET /groups/:groupId
 groupRouter.get('/:groupId', catchAsync(groupController.getGroupDetails));
 
@@ -20,11 +26,5 @@ groupRouter.patch('/:groupId', catchAsync(groupController.updateGroup));
 
 // 그룹 삭제 DELETE /groups/:groupId
 groupRouter.delete('/:groupId', catchAsync(groupController.deleteGroup));
-
-// 그룹 좋아요
-groupRouter.post('/groups/:groupId/likes', catchAsync(groupController.PostGroupLike));
-
-// 그룹 좋아요 취소
-groupRouter.delete('/groups/:groupId/likes', catchAsync(groupController.DeleteGroupLike));
 
 export default groupRouter;
