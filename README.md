@@ -1,108 +1,337 @@
-## Team 4
-https://www.notion.so/29ffc892a16f81829db5c63ea7ca2167?source=copy_link
------
-### 팀원 구성
-윤정아 (개인 Github 링크)
-김지수 (개인 Github 링크)
-유인학 (개인 Github 링크)
-이주은 (개인 Github 링크)
+# Seven Team 4 – Group Exercise API
 
-### 프로젝트 소개
-운동 커뮤니티 사이트의 백엔드 시스템 구축
-프로젝트 기간: 2025.11.3 ~ 2024.11.20
+운동 기록 관리용 백엔드 서비스입니다.  
+그룹 참여/탈퇴, 운동 기록 집계(주간·월간), 기록 상세 조회 기능을 제공합니다.
 
-### 기술 스택
-Backend: Express.js, PrismaORM
-Database: postgreSQL
-공통 Tool: Git & Github, Notion, Discord
+배포 링크: <https://nb06-seven-team4.onrender.com>
 
------
-### 팀원별 구현 기능 상세
-윤정아
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+## Tech Stack
 
-example)
-소셜 로그인 API
-구글 소셜 로그인 API를 활용하여 소셜 로그인 기능을 구현
-로그인 후 추가 정보 입력을 위한 API 엔드포인트 개발
-회원 추가 정보 입력 API
-회원 유형(관리자, 학생)에 따른 조건부 입력 처리 API 구현
+| Category | Tools                   |
+| -------- | ----------------------- |
+| Runtime  | Node.js 20+, Express.js |
+| ORM      | Prisma                  |
+| Database | PostgreSQL              |
+| Etc.     | dotenv, cors            |
 
+## Project Structure
 
-김지수
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+```
+src/
+ ├─ controller/
+ │   ├─ participantController.js   # 그룹 참가/탈퇴
+ │   └─ rankingController.js       # 랭킹·기록 조회
+ ├─ router/
+ │   ├─ participantRouter.js
+ │   └─ rankingRouter.js
+ ├─ libs/
+ │   ├─ database.js                # Prisma Client
+ │   ├─ constants.js
+ │   └─ error/
+ │       ├─ appError.js            # 커스텀 에러
+ │       └─ errorHandler.js        # Global Error Handler
+ └─ main.js                        # Express 앱 엔트리
+prisma/
+ └─ schema.prisma
+```
 
-example)
-회원별 권한 관리
-사용자의 역할에 따라 권한을 설정하는 API 구현
-관리자 페이지와 일반 사용자 페이지를 위한 조건부 라우팅 기능 개발
-반응형 레이아웃 API
-클라이언트에서 전달된 요청에 맞춰 반응형 레이아웃을 위한 API 엔드포인트 구현
+## Getting Started
 
+```bash
+# install
+npm install
 
-유인학
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+# env (예: DATABASE_URL, PORT, CORS_ORIGIN)
+cp .env.example .env   # 없으면 직접 생성
 
-수강생 정보 관리 API
-fetch(GET)을 사용하여 학생의 수강 정보를 조회하는 API 엔드포인트 개발
-수강 정보의 반응형 UI 구성
-공용 Button API
-공통으로 사용할 버튼 기능을 처리하는 API 구현
+# prisma
+npx prisma migrate deploy 
+npx prisma generate
+npx prisma db seed
 
+# run
+npm run dev   # 🚨필수!!
+```
 
-이주은
-(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+환경 변수
 
-관리자 API
-Path Parameter를 활용한 동적 라우팅 기능 구현
-fetch(PATCH, DELETE)를 사용하여 학생 정보를 수정하고 탈퇴하는 API 엔드포인트 개발
-CRUD 기능
-학생 정보 CRUD 기능을 제공하는 API 구현
-회원관리 슬라이더
-학생별 정보 목록을 carousel 방식으로 보여주는 API 개발
+| Key            | Description                     |
+| -------------- | ------------------------------- |
+| `DATABASE_URL` | PostgreSQL 연결 문자열          |
+| `PORT`         | 서버 포트 (기본 3000)           |
+| `CORS_ORIGIN`  | 허용할 Origin. `*` 면 전체 허용 |
 
+## API Overview
 
-### 파일 구조
-src
- ┣ config
- ┃ ┗ db.ts
- ┣ controllers
- ┃ ┣ auth.controller.ts
- ┃ ┗ user.controller.ts
- ┣ middleware
- ┃ ┣ auth.middleware.ts
- ┃ ┗ error.middleware.ts
- ┣ models
- ┃ ┣ user.model.ts
- ┃ ┗ course.model.ts
- ┣ routes
- ┃ ┣ auth.routes.ts
- ┃ ┗ user.routes.ts
- ┣ services
- ┃ ┣ auth.service.ts
- ┃ ┗ user.service.ts
- ┣ utils
- ┃ ┣ jwt.ts
- ┃ ┣ constants.ts
- ┃ ┗ logger.ts
- ┣ main.js
- ┗ server.ts
-prisma
- ┣ schema.prisma
- ┗ seed.ts
-.env
-.gitignore
-package.json
-tsconfig.json
-README.md
+| Method       | Endpoint                                                 | Description   |
+|--------------|----------------------------------------------------------|---------------|
+| `POST`       | `/groups`                                                | 그룹 생성         |
+| `GET`        | `/groups/?page=1&limit=5&orderBy=createdAt&order=desc`   | 그룹 목록 조건 조회   |
+| `GET`        | `/groups/:groupId`                                       | 그룹 상세 조회      |
+| `PATCH`      | `/groups/:groupId`                                       | 그룹 수정         |
+| `DELETE`     | `/groups/:groupId`                                       | 그룹 삭제         |
+| ------------ | -------------------------------------------------------- | ------------- |
+| `POST`       | `/groups/:groupId/participants`                          | 그룹 참여         |
+| `DELETE`     | `/groups/:groupId/participants`                          | 그룹 탈퇴         |
+| `GET`        | `/groups/:groupId/rank?duration=weekly\|monthly`         | 그룹 랭킹         |
+| `GET`        | `/groups/records/:recordId`                              | 기록 상세         |
 
+### 에러 응답 규칙
 
-### 구현 홈페이지
-(개발한 홈페이지에 대한 링크 게시)
+모든 핸들러는 `AppError` → `errorHandler`로 전달되며 아래 형식을 반환합니다.
 
-https://www.codeit.kr/
+```json
+{
+  "success": false,
+  "message": "설명",
+  "path": "필드명(Optional)"
+}
+```
 
+---
 
-### 프로젝트 회고록
-(제작한 발표자료 링크 혹은 첨부파일 첨부)
+## API Details
 
+### 1. 그룹 생성
+`POST /groups`
+
+**201 CREATED**
+
+```json
+{
+  "message": "그룹 등록이 성공적으로 완료되었습니다.",
+  "group": {
+    "id": 7,
+    "groupName": "Exercise_IS_FUN",
+    "description": "11월도 운동해요",
+    "nickname": "GOOD_EXERCISE_NICE",
+    "tag": [
+      "Running"
+    ],
+    "createdAt": "2025-11-18T10:23:41.552Z"
+  }
+}
+```
+
+### 2. 그룹 목록 조회
+`GET /groups/?page=1&limit=5&orderBy=createdAt&order=desc`
+
+```markdown
+조건: 
+orderBy 1. likeCount, 2. participantCount, 3. createdAt
+order 1. asc, 2. desc
+```
+
+**200 OK**
+
+```json
+{
+  "list": [
+    {
+      "id": 4,
+      "groupName": "Running_OCT",
+      "description": "10월도 RunRun",
+      "nickname": "NICE_RUNNING",
+      "image": "https://example.com/images/group_logo_A.png",
+      "tag": [
+        "Running"
+      ],
+      "goalNumber": 50,
+      "likes": 0,
+      "createdAt": "2025-11-19T02:11:46.015Z"
+    },
+    {
+      "id": 2,
+      "groupName": "Running_NOV",
+      "description": "11월도 RunRun",
+      "nickname": "GOOD_RUNNING",
+      "image": "https://example.com/images/group_logo_A.png",
+      "tag": [
+        "Running"
+      ],
+      "goalNumber": 100,
+      "likes": 0,
+      "createdAt": "2025-11-18T08:34:10.226Z"
+    }
+  ],
+  "totalCount": 6
+}
+```
+
+### 3. 그룹 상세 조회
+`GET /groups/:groupsId`
+
+**200 OK**
+
+```json
+{
+  "message": "그룹 상세 조회가 성공적으로 완료되었습니다.",
+  "group": {
+    "id": 1,
+    "groupName": "Running_DECEM",
+    "description": "12월도 RunRun",
+    "nickname": "BEST_RUNNING",
+    "image": "https://example.com/images/group_logo_A.png",
+    "tag": [
+      "Running"
+    ],
+    "discordwebhookurl": null,
+    "discordserverinviteurl": null,
+    "goalNumber": 50,
+    "likes": 0,
+    "createdAt": "2025-11-18T05:47:41.139Z",
+    "updatedAt": "2025-11-18T05:47:41.139Z",
+    "participants": [],
+    "medals": []
+  }
+}
+```
+
+Other responses
+- `404 Not Found` : `{  "success": false,  "message": "해당 그룹을 찾을 수 없습니다."  }`
+
+### 4. 그룹 수정
+`PATCH /groups/:groupId`
+
+**200 OK**
+```json
+{
+"message": "그룹 정보가 성공적으로 수정되었습니다.",
+"group": {
+"id": 7,
+"groupName": "스파르타-E",
+"description": "주간 목표를 100회로 상향",
+"updatedAt": "2025-11-18T10:39:38.865Z"
+}
+}
+```
+
+Other responses
+- `401 Unauthorized` : `{  "success": false,  "message": "그룹 수정을 위해서는 비밀번호를 입력해야 합니다." }`
+- `403 Forbidden` : `{  "success": false,  "message": "비밀번호가 일치하지 않습니다. 그룹 수정 권한이 없습니다." }`
+
+### 5. 그룹 삭제
+`DELETE /groups/:groupId`
+
+**204 NO CONTENT**
+
+Other responses
+- `401 Unauthorized` : `{  "success": false,  "message": "그룹 삭제를 위해서는 비밀번호를 입력해야 합니다."  }`
+- `403 Forbidden` : `{ "success": false,  "message": "비밀번호가 일치하지 않습니다. 그룹 삭제 권한이 없습니다."  }`
+- `404 Not Found` : `{  "success": false,  "message": "해당 그룹을 찾을 수 없습니다."  }`
+
+### 6. 그룹 참가
+
+`POST /groups/:groupId/participants`
+
+```json
+{
+  "nickname": "써밋",
+  "password": "pass1234"
+}
+```
+
+**201 CREATED**
+
+```json
+{
+  "id": 1,
+  "name": "세븐팀",
+  "description": "",
+  "photoUrl": "",
+  "goalRep": 100,
+  "discordWebhookUrl": "",
+  "discordInviteUrl": "",
+  "likeCount": 0,
+  "tags": [],
+  "owner": {
+    "id": 10,
+    "nickname": "리더",
+    "createdAt": 1728956400000,
+    "updatedAt": 1728956400000
+  },
+  "participants": [
+    {
+      "id": 10,
+      "nickname": "리더",
+      "createdAt": 1728956400000,
+      "updatedAt": 1728956400000
+    },
+    {
+      "id": 11,
+      "nickname": "써밋",
+      "createdAt": 1729042800000,
+      "updatedAt": 1729042800000
+    }
+  ],
+  "createdAt": 1728870000000,
+  "updatedAt": 1729042800000,
+  "badges": ["OVERHUNDREADRECORD"]
+}
+```
+
+**400 BAD REQUEST**
+
+```json
+{ "path": "nickname", "message": "nickname is required" }
+```
+
+### 7. 그룹 탈퇴
+
+`DELETE /groups/:groupId/participants`
+
+- JSON, Form-Data, Plain text 모두 처리
+
+```json
+{ "nickname": "써밋", "password": "pass1234" }
+```
+
+Responses
+
+- `204 NO CONTENT`
+- `400 BAD REQUEST` : `{ "path": "nickname", "message": "nickname is required" }`
+- `401 UNAUTHORIZED` : `{ "path": "password", "message": "Wrong password" }`
+
+### 8. 그룹 랭킹
+
+`GET /groups/:groupId/rank?duration=weekly|monthly`
+
+```json
+[
+  {
+    "participantId": 11,
+    "nickname": "써밋",
+    "recordCount": 12,
+    "recordTime": 540
+  },
+  {
+    "participantId": 10,
+    "nickname": "리더",
+    "recordCount": 7,
+    "recordTime": 310
+  }
+]
+```
+
+### 9. 기록 상세
+
+`GET /groups/records/:recordId`
+
+```json
+{
+  "exercisetype": "RUN",
+  "description": "새벽 러닝",
+  "images": ["https://example.com/run-1.jpg", "https://example.com/run-2.jpg"],
+  "playtime": 45,
+  "distance": 10.5,
+  "nickname": "써밋"
+}
+```
+
+---
+
+## Notes
+
+- Prisma 모델은 `prisma/schema.prisma` 참고
+- `src/libs/error/appError.js` 로 모든 비즈니스 예외를 표준화
+- README 응답 예시는 실제 데이터에 따라 달라질 수 있습니다.

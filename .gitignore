@@ -1,5 +1,6 @@
 node_modules/
-prisma/
+.prisma/
 .env
 __http__/
 src/generated/
+.idea/

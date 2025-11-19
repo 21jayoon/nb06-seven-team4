@@ -30,13 +30,14 @@ export async function checkAndAwardBadges(groupId) {
     const likeCount = group.likes;
 
     // 이미 부여된 배지 타입들
-    const awardedBadges = group.medals.map((medal) => medal.medaltype);
+    // Prisma 스키마에서 Medal 모델의 필드는 'type' (medalType enum)
+    const awardedBadges = group.medals.map((medal) => medal.type);
 
     // OVERTENMEMBER: 참여자 수가 10명 이상
     if (participantCount >= 10 && !awardedBadges.includes('OVERTENMEMBER')) {
       await prisma.medal.create({
         data: {
-          medaltype: 'OVERTENMEMBER',
+          type: 'OVERTENMEMBER',
           groupid: groupId,
         },
       });
@@ -46,7 +47,7 @@ export async function checkAndAwardBadges(groupId) {
     if (recordCount >= 100 && !awardedBadges.includes('OVERHUNDREADRECORD')) {
       await prisma.medal.create({
         data: {
-          medaltype: 'OVERHUNDREADRECORD',
+          type: 'OVERHUNDREADRECORD',
           groupid: groupId,
         },
       });
@@ -56,7 +57,7 @@ export async function checkAndAwardBadges(groupId) {
     if (likeCount >= 100 && !awardedBadges.includes('OVERHUNDREADLIKE')) {
       await prisma.medal.create({
         data: {
-          medaltype: 'OVERHUNDREADLIKE',
+          type: 'OVERHUNDREADLIKE',
           groupid: groupId,
         },
       });
