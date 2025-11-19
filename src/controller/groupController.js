@@ -120,8 +120,10 @@ export class GroupController {
           tag: true,
           goalNumber: true,
           likes: true,
-          participants: {
-            select: { nickname: true },
+          _count: {
+            select: {
+              participants: true,
+            },
           },
         },
         skip: (page - 1) * limit,
@@ -173,8 +175,10 @@ export class GroupController {
           tag: true,
           discordserverinviteurl: true,
           goalNumber: true,
-          participants: {
-            select: { nickname: true },
+          _count: {
+            select: {
+              participants: true,
+            },
           },
         },
       });
