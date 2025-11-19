@@ -115,13 +115,14 @@ export class GroupController {
         select: {
           id: true,
           groupName: true,
-          description: true,
           nickname: true,
           image: true,
           tag: true,
           goalNumber: true,
           likes: true,
-          createdAt: true,
+          participants: {
+            select: { nickname: true },
+          },
         },
         skip: (page - 1) * limit,
         take: limit,
@@ -170,17 +171,10 @@ export class GroupController {
           nickname: true,
           image: true,
           tag: true,
-          discordwebhookurl: true,
           discordserverinviteurl: true,
           goalNumber: true,
-          likes: true,
-          createdAt: true,
-          updatedAt: true,
           participants: {
             select: { nickname: true },
-          },
-          medals: {
-            select: { type: true, createdAt: true },
           },
         },
       });
