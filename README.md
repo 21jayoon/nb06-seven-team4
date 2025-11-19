@@ -1,7 +1,9 @@
 # Seven Team 4 – Group Exercise API
 
-Exercise-record 관리용 백엔드 서비스입니다.  
+운동 기록 관리용 백엔드 서비스입니다.  
 그룹 참여/탈퇴, 운동 기록 집계(주간·월간), 기록 상세 조회 기능을 제공합니다.
+
+배포 링크: <https://nb06-seven-team4.onrender.com>
 
 ## Tech Stack
 
@@ -43,11 +45,12 @@ npm install
 cp .env.example .env   # 없으면 직접 생성
 
 # prisma
-npx prisma migrate deploy   # or npx prisma db push
+npx prisma migrate deploy 
 npx prisma generate
+npx prisma db seed
 
 # run
-npm start
+npm run dev   # 🚨필수!!
 ```
 
 환경 변수
@@ -60,12 +63,18 @@ npm start
 
 ## API Overview
 
-| Method   | Endpoint                                         | Description |
-| -------- | ------------------------------------------------ | ----------- |
-| `POST`   | `/groups/:groupId/participants`                  | 그룹 참가   |
-| `DELETE` | `/groups/:groupId/participants`                  | 그룹 탈퇴   |
-| `GET`    | `/groups/:groupId/rank?duration=weekly\|monthly` | 그룹 랭킹   |
-| `GET`    | `/groups/records/:recordId`                      | 기록 상세   |
+| Method       | Endpoint                                                 | Description   |
+|--------------|----------------------------------------------------------|---------------|
+| `POST`       | `/groups`                                                | 그룹 생성         |
+| `GET`        | `/groups/?page=1&limit=5&orderBy=createdAt&order=desc`   | 그룹 목록 조건 조회   |
+| `GET`        | `/groups/:groupId`                                       | 그룹 상세 조회      |
+| `PATCH`      | `/groups/:groupId`                                       | 그룹 수정         |
+| `DELETE`     | `/groups/:groupId`                                       | 그룹 삭제         |
+| ------------ | -------------------------------------------------------- | ------------- |
+| `POST`       | `/groups/:groupId/participants`                          | 그룹 참여         |
+| `DELETE`     | `/groups/:groupId/participants`                          | 그룹 탈퇴         |
+| `GET`        | `/groups/:groupId/rank?duration=weekly\|monthly`         | 그룹 랭킹         |
+| `GET`        | `/groups/records/:recordId`                              | 기록 상세         |
 
 ### 에러 응답 규칙
 
@@ -83,7 +92,135 @@ npm start
 
 ## API Details
 
-### 1. 그룹 참가
+### 1. 그룹 생성
+`POST /groups`
+
+**201 CREATED**
+
+```json
+{
+  "message": "그룹 등록이 성공적으로 완료되었습니다.",
+  "group": {
+    "id": 7,
+    "groupName": "Exercise_IS_FUN",
+    "description": "11월도 운동해요",
+    "nickname": "GOOD_EXERCISE_NICE",
+    "tag": [
+      "Running"
+    ],
+    "createdAt": "2025-11-18T10:23:41.552Z"
+  }
+}
+```
+
+### 2. 그룹 목록 조회
+`GET /groups/?page=1&limit=5&orderBy=createdAt&order=desc`
+
+```markdown
+조건: 
+orderBy 1. likeCount, 2. participantCount, 3. createdAt
+order 1. asc, 2. desc
+```
+
+**200 OK**
+
+```json
+{
+  "list": [
+    {
+      "id": 4,
+      "groupName": "Running_OCT",
+      "description": "10월도 RunRun",
+      "nickname": "NICE_RUNNING",
+      "image": "https://example.com/images/group_logo_A.png",
+      "tag": [
+        "Running"
+      ],
+      "goalNumber": 50,
+      "likes": 0,
+      "createdAt": "2025-11-19T02:11:46.015Z"
+    },
+    {
+      "id": 2,
+      "groupName": "Running_NOV",
+      "description": "11월도 RunRun",
+      "nickname": "GOOD_RUNNING",
+      "image": "https://example.com/images/group_logo_A.png",
+      "tag": [
+        "Running"
+      ],
+      "goalNumber": 100,
+      "likes": 0,
+      "createdAt": "2025-11-18T08:34:10.226Z"
+    }
+  ],
+  "totalCount": 6
+}
+```
+
+### 3. 그룹 상세 조회
+`GET /groups/:groupsId`
+
+**200 OK**
+
+```json
+{
+  "message": "그룹 상세 조회가 성공적으로 완료되었습니다.",
+  "group": {
+    "id": 1,
+    "groupName": "Running_DECEM",
+    "description": "12월도 RunRun",
+    "nickname": "BEST_RUNNING",
+    "image": "https://example.com/images/group_logo_A.png",
+    "tag": [
+      "Running"
+    ],
+    "discordwebhookurl": null,
+    "discordserverinviteurl": null,
+    "goalNumber": 50,
+    "likes": 0,
+    "createdAt": "2025-11-18T05:47:41.139Z",
+    "updatedAt": "2025-11-18T05:47:41.139Z",
+    "participants": [],
+    "medals": []
+  }
+}
+```
+
+Other responses
+- `404 Not Found` : `{  "success": false,  "message": "해당 그룹을 찾을 수 없습니다."  }`
+
+### 4. 그룹 수정
+`PATCH /groups/:groupId`
+
+**200 OK**
+```json
+{
+"message": "그룹 정보가 성공적으로 수정되었습니다.",
+"group": {
+"id": 7,
+"groupName": "스파르타-E",
+"description": "주간 목표를 100회로 상향",
+"updatedAt": "2025-11-18T10:39:38.865Z"
+}
+}
+```
+
+Other responses
+- `401 Unauthorized` : `{  "success": false,  "message": "그룹 수정을 위해서는 비밀번호를 입력해야 합니다." }`
+- `403 Forbidden` : `{  "success": false,  "message": "비밀번호가 일치하지 않습니다. 그룹 수정 권한이 없습니다." }`
+
+### 5. 그룹 삭제
+`DELETE /groups/:groupId`
+
+**204 NO CONTENT**
+
+Other responses
+- `401 Unauthorized` : `{  "success": false,  "message": "그룹 삭제를 위해서는 비밀번호를 입력해야 합니다."  }`
+- `403 Forbidden` : `{ "success": false,  "message": "비밀번호가 일치하지 않습니다. 그룹 삭제 권한이 없습니다."  }`
+- `404 Not Found` : `{  "success": false,  "message": "해당 그룹을 찾을 수 없습니다."  }`
+
+### 6. 그룹 참가
 
 `POST /groups/:groupId/participants`
 
@@ -139,7 +276,7 @@ npm start
 { "path": "nickname", "message": "nickname is required" }
 ```
 
-### 2. 그룹 탈퇴
+### 7. 그룹 탈퇴
 
 `DELETE /groups/:groupId/participants`
 
@@ -155,7 +292,7 @@ Responses
 - `400 BAD REQUEST` : `{ "path": "nickname", "message": "nickname is required" }`
 - `401 UNAUTHORIZED` : `{ "path": "password", "message": "Wrong password" }`
 
-### 3. 그룹 랭킹
+### 8. 그룹 랭킹
 
 `GET /groups/:groupId/rank?duration=weekly|monthly`
 
@@ -176,7 +313,7 @@ Responses
 ]
 ```
 
-### 4. 기록 상세
+### 9. 기록 상세
 
 `GET /groups/records/:recordId`
 
@@ -192,8 +329,6 @@ Responses
 ```
 
 ---
-
-https://www.codeit.kr/
 
 ## Notes
 
